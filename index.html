@@ -6,12 +6,12 @@
 <title>القرآن الكريم</title>
 
 <link rel="manifest" href="manifest.json">
+<script src="quran.js"></script>
 
 <style>
 body {
-  font-family: "Tahoma", Arial;
+  font-family: Tahoma, Arial;
   margin: 0;
-  padding: 0;
   background: #f4f4f4;
   color: #222;
   transition: 0.3s;
@@ -31,22 +31,27 @@ header {
   color: white;
 }
 
-header button, header a {
+header a, header button {
+  color: white;
   background: none;
   border: none;
-  color: white;
   font-size: 16px;
-  text-decoration: none;
   cursor: pointer;
+  text-decoration: none;
 }
 
 main {
   padding: 15px;
 }
 
-.surah {
-  border-bottom: 1px solid #ccc;
-  padding: 10px 0;
+select {
+  font-size: 16px;
+  padding: 5px;
+}
+
+p {
+  line-height: 2;
+  font-size: 18px;
 }
 </style>
 </head>
@@ -58,43 +63,59 @@ main {
   <span>القرآن الكريم</span>
 </header>
 
-<main id="content">
+<main>
 
-  <h2>سورة الفاتحة</h2>
+<label><strong>اختر السورة:</strong></label><br><br>
 
-  <p>
-  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
-  الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ<br>
-  الرَّحْمَٰنِ الرَّحِيمِ<br>
-  مَالِكِ يَوْمِ الدِّينِ<br>
-  إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ<br>
-  اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ<br>
-  صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ
-  </p>
+<select id="surahSelect" onchange="showSurah()">
+  <option value="">-- اختر سورة --</option>
+</select>
 
-  <audio controls>
-    <source src="audio/fatiha.mp3" type="audio/mpeg">
-    متصفحك لا يدعم تشغيل الصوت
-  </audio>
+<hr>
 
-  <br><br>
-
-  <a href="audio/fatiha.mp3" download>
-    ⬇️ تحميل سورة الفاتحة (صوت)
-  </a>
+<div id="surahContent"></div>
 
 </main>
 
 <script>
 function toggleMode(){
   document.body.classList.toggle("dark");
-  const btn = document.getElementById("modeBtn");
-  btn.textContent = document.body.classList.contains("dark") ? "فاتح" : "داكن";
+  document.getElementById("modeBtn").textContent =
+    document.body.classList.contains("dark") ? "فاتح" : "داكن";
+}
+
+// تعبئة القائمة
+const select = document.getElementById("surahSelect");
+const content = document.getElementById("surahContent");
+
+quran.forEach((s, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = s.number + " - " + s.name;
+  select.appendChild(opt);
+});
+
+function showSurah() {
+  const i = select.value;
+  if (i === "") {
+    content.innerHTML = "";
+    return;
+  }
+
+  const s = quran[i];
+  let html = `<h2>سورة ${s.name}</h2>`;
+
+  s.verses.forEach((v, n) => {
+    html += `<p>${n + 1}. ${v}</p>`;
+  });
+
+  content.innerHTML = html;
 }
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
 </script>
+
 </body>
 </html>
