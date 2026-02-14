@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>الأدعية</title>
+
+<style>
+body {
+  font-family: Tahoma;
+  background: #f4f4f4;
+  color: #222;
+  margin: 0;
+  transition: 0.3s;
+}
+
+body.dark {
+  background: #121212;
+  color: #f4f4f4;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #2e7d32;
+  color: white;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+}
+
+main {
+  padding: 15px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <a href="index.html">السابق</a>
+  <a href="tasbeeh.html">التالي</a>
+  <span>الأدعية</span>
+</header>
+
+<main>
+  <p>سيتم وضع الأدعية كاملة هنا إن شاء الله.</p>
+</main>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
