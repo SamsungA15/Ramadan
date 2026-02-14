@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>المسبحة</title>
+
+<style>
+body {
+  font-family: Tahoma;
+  background: #f4f4f4;
+  text-align: center;
+  margin: 0;
+}
+
+button {
+  font-size: 20px;
+  padding: 10px 20px;
+  margin: 10px;
+}
+</style>
+</head>
+
+<body>
+<header style="background:#2e7d32;color:white;padding:10px;">
+  <a href="adhkar.html" style="color:white;">السابق</a>
+  <span>المسبحة</span>
+</header>
+
+<h1 id="count">0</h1>
+
+<button onclick="add()">سبحان الله</button>
+<button onclick="add()">الحمد لله</button>
+<button onclick="add()">الله أكبر</button>
+
+<script>
+let counter = 0;
+function add(){
+  counter++;
+  document.getElementById("count").textContent = counter;
+}
+</script>
+</body>
+</html>
