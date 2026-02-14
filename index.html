@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن الكريم</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+  font-family: "Tahoma", Arial;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #222;
+  transition: 0.3s;
+}
+
+body.dark {
+  background: #121212;
+  color: #f4f4f4;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #2e7d32;
+  color: white;
+}
+
+header button, header a {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+main {
+  padding: 15px;
+}
+
+.surah {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <a href="adhkar.html">التالي</a>
+  <button onclick="toggleMode()" id="modeBtn">داكن</button>
+  <span>القرآن الكريم</span>
+</header>
+
+<main id="content">
+  <p>سيتم وضع القرآن هنا كاملًا في المرحلة القادمة إن شاء الله.</p>
+</main>
+
+<script>
+function toggleMode(){
+  document.body.classList.toggle("dark");
+  const btn = document.getElementById("modeBtn");
+  btn.textContent = document.body.classList.contains("dark") ? "فاتح" : "داكن";
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
