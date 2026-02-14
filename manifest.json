@@ -1,0 +1,8 @@
+{
+  "name": "موقع رمضان",
+  "short_name": "رمضان",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#2e7d32",
+  "theme_color": "#2e7d32"
+}
