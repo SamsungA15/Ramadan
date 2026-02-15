@@ -40,6 +40,9 @@ button{
   margin:5px 0;
   border:1px solid #ccc;
 }
+.card.active{
+  background:#ffeaa7;
+}
 select{
   width:100%;
   padding:8px;
@@ -112,48 +115,46 @@ select{
   <button onclick="reset()">تصفير</button>
 </div>
 
-<!-- تحميل ملف القرآن (يجب أن يكون موجود) -->
+<!-- تحميل القرآن -->
 <script src="quran.js"></script>
 
 <script>
 /* ================== متغيرات ================== */
-let historyPages = ["home"];
-let currentIndex = 0;
-let surahList = [];
-let selectedSurahIndex = null;
-let count = 0;
+let historyPages=["home"];
+let currentIndex=0;
+let surahList=[];
+let selectedSurahIndex=null;
+let count=0;
 
-const surahSelect  = document.getElementById("surahSelect");
-const surahTitle   = document.getElementById("surahTitle");
-const surahContent = document.getElementById("surahContent");
-const themeBtn     = document.getElementById("themeBtn");
+const surahSelect=document.getElementById("surahSelect");
+const surahTitle=document.getElementById("surahTitle");
+const surahContent=document.getElementById("surahContent");
+const themeBtn=document.getElementById("themeBtn");
 
 /* ================== حفظ تلقائي ================== */
-if(localStorage.theme === "dark"){
+if(localStorage.theme==="dark"){
   document.body.classList.add("dark");
-  themeBtn.textContent = "فاتح";
+  themeBtn.textContent="فاتح";
 }
 if(localStorage.count){
-  count = Number(localStorage.count);
-  document.getElementById("count").textContent = count;
+  count=Number(localStorage.count);
+  document.getElementById("count").textContent=count;
 }
 
-/* ================== تنقل الصفحات ================== */
+/* ================== تنقل ================== */
 function openPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   historyPages.push(id);
-  currentIndex = historyPages.length - 1;
+  currentIndex=historyPages.length-1;
 }
-
 function goBack(){
-  if(currentIndex > 0){
+  if(currentIndex>0){
     currentIndex--;
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(historyPages[currentIndex]).classList.add("active");
   }
 }
-
 function goNext(){
   if(document.getElementById("quranPage").classList.contains("active")){
     loadSurah();
@@ -164,69 +165,71 @@ function goNext(){
 /* ================== الوضع الداكن ================== */
 function toggleTheme(){
   document.body.classList.toggle("dark");
-  const dark = document.body.classList.contains("dark");
-  themeBtn.textContent = dark ? "فاتح" : "داكن";
-  localStorage.theme = dark ? "dark" : "light";
+  let dark=document.body.classList.contains("dark");
+  themeBtn.textContent=dark?"فاتح":"داكن";
+  localStorage.theme=dark?"dark":"light";
 }
 
-/* ================== تجهيز القرآن (حل جذري) ================== */
+/* ================== تجهيز القرآن ================== */
 (function prepareQuran(){
-  if(typeof quran === "undefined"){
-    alert("ملف quran.js غير موجود");
-    return;
-  }
-
   if(Array.isArray(quran)){
-    surahList = quran;
+    surahList=quran;
   }else if(quran.surahs){
-    surahList = quran.surahs;
+    surahList=quran.surahs;
   }else{
-    surahList = Object.values(quran);
+    surahList=Object.values(quran);
   }
 
   surahList.forEach((s,i)=>{
-    const o = document.createElement("option");
-    o.value = i;
-    o.textContent = s.name || s.title || ("سورة " + (i+1));
+    const o=document.createElement("option");
+    o.value=i;
+    o.textContent=s.name||("سورة "+(i+1));
     surahSelect.appendChild(o);
   });
+
+  if(localStorage.surah){
+    selectedSurahIndex=Number(localStorage.surah);
+    surahSelect.value=selectedSurahIndex;
+  }
 })();
 
-surahSelect.onchange = ()=>{
-  selectedSurahIndex = Number(surahSelect.value);
-  localStorage.surah = selectedSurahIndex;
+surahSelect.onchange=()=>{
+  selectedSurahIndex=Number(surahSelect.value);
+  localStorage.surah=selectedSurahIndex;
 };
 
-/* ================== تحميل السورة (بدون أخطاء) ================== */
+/* ================== تحميل السورة + حفظ آخر آية ================== */
 function loadSurah(){
-  if(selectedSurahIndex === null) return;
+  if(selectedSurahIndex===null) return;
 
-  surahContent.innerHTML = "";
-  const surah = surahList[selectedSurahIndex];
+  surahContent.innerHTML="";
+  const surah=surahList[selectedSurahIndex];
+  surahTitle.textContent=surah.name||"سورة";
 
-  if(!surah){
-    surahContent.textContent = "لم يتم العثور على السورة";
-    return;
-  }
+  let ayahs=surah.ayahs||surah.verses||surah.ayat||surah.text||[];
+  if(!Array.isArray(ayahs)) ayahs=Object.values(ayahs);
 
-  surahTitle.textContent = surah.name || "سورة";
-
-  let ayahs =
-    surah.ayahs ||
-    surah.verses ||
-    surah.ayat ||
-    surah.text ||
-    [];
-
-  if(!Array.isArray(ayahs)){
-    ayahs = Object.values(ayahs);
-  }
+  let lastAyah=Number(localStorage.lastAyah)||0;
 
   ayahs.forEach((a,i)=>{
-    const d = document.createElement("div");
-    d.className = "card";
-    d.textContent = (i+1) + " - " + a;
+    const d=document.createElement("div");
+    d.className="card";
+    if(i===lastAyah) d.classList.add("active");
+
+    const text=a.text||a.aya||a.content||a;
+    d.textContent=(i+1)+" - "+text;
+
+    d.onclick=()=>{
+      localStorage.lastAyah=i;
+      document.querySelectorAll(".card").forEach(c=>c.classList.remove("active"));
+      d.classList.add("active");
+    };
+
     surahContent.appendChild(d);
+
+    if(i===lastAyah){
+      setTimeout(()=>d.scrollIntoView({behavior:"smooth"}),300);
+    }
   });
 }
 
@@ -234,14 +237,13 @@ function loadSurah(){
 function increment(){
   if(!zikrSelect.value) return;
   count++;
-  document.getElementById("count").textContent = count;
-  localStorage.count = count;
+  document.getElementById("count").textContent=count;
+  localStorage.count=count;
 }
-
 function reset(){
-  count = 0;
-  document.getElementById("count").textContent = 0;
-  localStorage.count = 0;
+  count=0;
+  document.getElementById("count").textContent=0;
+  localStorage.count=0;
 }
 </script>
 
