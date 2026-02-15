@@ -2,81 +2,34 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>القرآن الكريم</title>
+<title>اختبار القائمة</title>
 
-<!-- ربط ملف القرآن -->
+<!-- تحميل القرآن -->
 <script src="quran.js"></script>
-
-<style>
-body {
-  font-family: Tahoma, Arial, sans-serif;
-  margin: 0;
-  background: #f9f9f9;
-  color: #222;
-  padding: 15px;
-}
-
-header {
-  background: #2e7d32;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  font-size: 20px;
-}
-
-select {
-  font-size: 16px;
-  padding: 8px;
-  margin-top: 10px;
-  width: 100%;
-}
-
-p {
-  line-height: 2;
-  font-size: 18px;
-}
-</style>
 </head>
+
 <body>
 
-<header>القرآن الكريم</header>
+<h2>اختر سورة</h2>
 
-<label for="surahSelect"><strong>اختر السورة:</strong></label>
-<select id="surahSelect" onchange="showSurah()">
-  <option value="">-- اختر سورة --</option>
+<select id="surahSelect">
+  <option>جاري التحميل...</option>
 </select>
 
-<hr>
-
-<div id="surahContent"></div>
-
-<!-- كود العرض -->
 <script>
-// نملأ قائمة السور
 const select = document.getElementById("surahSelect");
-const content = document.getElementById("surahContent");
 
-quran.forEach((s, i) => {
-  const opt = document.createElement("option");
-  opt.value = i;
-  opt.textContent = s.name;
-  select.appendChild(opt);
-});
+if (typeof quran === "undefined") {
+  select.innerHTML = "<option>❌ ملف القرآن لم يُحمَّل</option>";
+} else {
+  select.innerHTML = '<option value="">-- اختر سورة --</option>';
 
-// عند اختيار السورة
-function showSurah() {
-  const i = select.value;
-  if (i === "") {
-    content.innerHTML = "";
-    return;
-  }
-  const surah = quran[i];
-  let html = `<h2>سورة ${surah.name}</h2>`;
-  surah.verses.forEach((v, idx) => {
-    html += `<p>${idx + 1}. ${v}</p>`;
+  quran.forEach((s, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = s.name;
+    select.appendChild(opt);
   });
-  content.innerHTML = html;
 }
 </script>
 
