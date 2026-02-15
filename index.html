@@ -29,26 +29,23 @@ header{
   padding:10px;
   background:var(--card);
 }
-button{
-  padding:8px 12px;
+button, select{
+  padding:8px;
   font-size:16px;
 }
 section{
   display:none;
   padding:20px;
 }
-section.active{display:block}
+section.active{
+  display:block;
+}
 .card{
   background:var(--card);
   padding:10px;
   margin:8px 0;
   border-radius:6px;
   line-height:1.8;
-}
-select{
-  width:100%;
-  padding:10px;
-  font-size:18px;
 }
 </style>
 </head>
@@ -61,79 +58,146 @@ select{
   <button onclick="next()">التالي ➡</button>
 </header>
 
-<!-- الصفحة 1 -->
+<!-- الصفحة 0 -->
 <section class="active">
   <h2>🌙 مرحبًا بك</h2>
-  <p>القرآن الكريم – الأذكار – المسبحة</p>
+  <p>اختر سورة أو ذكر ثم انتقل</p>
 </section>
 
-<!-- الصفحة 2 -->
+<!-- الصفحة 1: اختيار سورة -->
 <section>
-  <h2>📖 القرآن الكريم</h2>
+  <h2>📖 اختر سورة</h2>
   <select id="surahSelect">
     <option value="">اختر سورة</option>
   </select>
-  <div id="quranContent"></div>
 </section>
 
-<!-- الصفحة 3 -->
+<!-- الصفحة 2: محتوى السورة -->
+<section>
+  <h2 id="surahTitle">السورة</h2>
+  <div id="surahContent"></div>
+</section>
+
+<!-- الصفحة 3: المسبحة -->
 <section>
   <h2>📿 المسبحة</h2>
 
-  <h1 id="zikr">سبحان الله</h1>
+  <select id="zikrSelect">
+    <option value="">اختر الذكر</option>
+  </select>
+
+  <h1 id="currentZikr"></h1>
   <h1 id="count">0</h1>
 
   <button onclick="tasbeeh()">➕ تسبيح</button>
   <button onclick="reset()">🔄 تصفير</button>
-  <button onclick="changeZikr()">🔁 تغيير الذكر</button>
 </section>
 
+<!-- ربط القرآن -->
 <script src="quran.js"></script>
 
 <script>
-/* التنقل */
+/* =========================
+   التنقل بين الصفحات
+========================= */
 const pages=document.querySelectorAll("section");
-let page=0;
+let page = parseInt(localStorage.getItem("lastPage")) || 0;
+
 function show(){
   pages.forEach(p=>p.classList.remove("active"));
   pages[page].classList.add("active");
+  localStorage.setItem("lastPage", page);
 }
-function next(){ if(page<pages.length-1){page++;show();} }
-function prev(){ if(page>0){page--;show();} }
+show();
 
-/* الوضع الداكن */
-let dark=false;
+function next(){
+  if(page===1 && selectedSurahIndex===null){
+    alert("اختر سورة أولًا");
+    return;
+  }
+  if(page<pages.length-1){
+    page++;
+    show();
+  }
+}
+function prev(){
+  if(page>0){
+    page--;
+    show();
+  }
+}
+
+/* =========================
+   الوضع الداكن / الفاتح
+========================= */
+let dark = localStorage.getItem("darkMode")==="true";
+
+if(dark){
+  document.body.classList.add("dark");
+  document.getElementById("modeBtn").textContent="☀ فاتح";
+}
+
 function toggleMode(){
   dark=!dark;
   document.body.classList.toggle("dark");
   document.getElementById("modeBtn").textContent=dark?"☀ فاتح":"🌙 داكن";
+  localStorage.setItem("darkMode", dark);
 }
 
-/* القرآن */
-const select=document.getElementById("surahSelect");
-const quranDiv=document.getElementById("quranContent");
+/* =========================
+   القرآن + الحفظ التلقائي
+========================= */
+const surahSelect=document.getElementById("surahSelect");
+const surahContent=document.getElementById("surahContent");
+const surahTitle=document.getElementById("surahTitle");
+
+let selectedSurahIndex = localStorage.getItem("lastSurah");
+if(selectedSurahIndex!==null){
+  selectedSurahIndex = parseInt(selectedSurahIndex);
+}
 
 quran.forEach((s,i)=>{
   const o=document.createElement("option");
   o.value=i;
   o.textContent=s.name;
-  select.appendChild(o);
+  surahSelect.appendChild(o);
 });
 
-select.onchange=()=>{
-  quranDiv.innerHTML="";
-  if(select.value==="")return;
-  quran[select.value].ayahs.forEach((a,i)=>{
+if(selectedSurahIndex!==null){
+  surahSelect.value = selectedSurahIndex;
+}
+
+surahSelect.onchange=()=>{
+  selectedSurahIndex = parseInt(surahSelect.value);
+  localStorage.setItem("lastSurah", selectedSurahIndex);
+};
+
+function loadSurah(){
+  if(selectedSurahIndex===null) return;
+  surahContent.innerHTML="";
+  const surah = quran[selectedSurahIndex];
+  surahTitle.textContent = surah.name;
+  surah.ayahs.forEach((a,i)=>{
     const d=document.createElement("div");
     d.className="card";
     d.textContent=(i+1)+" - "+a.text;
-    quranDiv.appendChild(d);
+    surahContent.appendChild(d);
   });
-};
+}
 
-/* المسبحة */
-let count=0;
-let zikrIndex=0;
+/* =========================
+   تحميل السورة عند فتح صفحتها
+========================= */
+const observer=new MutationObserver(()=>{
+  if(page===2){
+    loadSurah();
+  }
+});
+observer.observe(document.body,{attributes:true,subtree:true});
+
+/* =========================
+   المسبحة + الحفظ التلقائي
+========================= */
 const azkar=[
 "سبحان الله",
 "الحمد لله",
@@ -148,18 +212,45 @@ const azkar=[
 "حسبنا الله ونعم الوكيل"
 ];
 
-function tasbeeh(){
-  count++;
-  document.getElementById("count").textContent=count;
+const zikrSelect=document.getElementById("zikrSelect");
+const currentZikr=document.getElementById("currentZikr");
+let count = parseInt(localStorage.getItem("tasbeehCount")) || 0;
+
+azkar.forEach(z=>{
+  const o=document.createElement("option");
+  o.value=z;
+  o.textContent=z;
+  zikrSelect.appendChild(o);
+});
+
+document.getElementById("count").textContent = count;
+
+const savedZikr = localStorage.getItem("lastZikr");
+if(savedZikr){
+  zikrSelect.value = savedZikr;
+  currentZikr.textContent = savedZikr;
 }
-function reset(){
-  count=0;
-  document.getElementById("count").textContent=count;
-}
-function changeZikr(){
-  zikrIndex=(zikrIndex+1)%azkar.length;
-  document.getElementById("zikr").textContent=azkar[zikrIndex];
+
+zikrSelect.onchange=()=>{
+  currentZikr.textContent = zikrSelect.value;
+  localStorage.setItem("lastZikr", zikrSelect.value);
   reset();
+};
+
+function tasbeeh(){
+  if(!zikrSelect.value){
+    alert("اختر ذكرًا أولًا");
+    return;
+  }
+  count++;
+  document.getElementById("count").textContent = count;
+  localStorage.setItem("tasbeehCount", count);
+}
+
+function reset(){
+  count = 0;
+  document.getElementById("count").textContent = count;
+  localStorage.setItem("tasbeehCount", count);
 }
 </script>
 
