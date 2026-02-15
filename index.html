@@ -1,86 +1,160 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>القرآن الكريم</title>
+<meta charset="UTF-8">
+<title>القرآن والأذكار</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      background: #f5f5f5;
-      padding: 20px;
-    }
+<style>
+:root{
+  --bg:#ffffff;
+  --text:#000000;
+  --card:#f0f0f0;
+}
 
-    select {
-      width: 100%;
-      padding: 10px;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
+.dark{
+  --bg:#121212;
+  --text:#ffffff;
+  --card:#1e1e1e;
+}
 
-    #surahContent p {
-      background: white;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      line-height: 1.8;
-    }
-  </style>
+body{
+  margin:0;
+  font-family:Arial;
+  direction:rtl;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.3s;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:var(--card);
+}
+
+button{
+  padding:8px 12px;
+  font-size:16px;
+}
+
+section{
+  display:none;
+  padding:20px;
+}
+
+section.active{
+  display:block;
+}
+
+.card{
+  background:var(--card);
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+}
+</style>
 </head>
 
 <body>
 
-  <h2>اختر سورة</h2>
+<header>
+  <button onclick="prev()">⬅ السابق</button>
+  <button onclick="toggleMode()" id="modeBtn">🌙 داكن</button>
+  <button onclick="next()">التالي ➡</button>
+</header>
 
-  <select id="surahSelect">
-    <option value="">-- اختر سورة --</option>
-  </select>
+<!-- الصفحة 1 -->
+<section class="active">
+  <h2>🌙 مرحبًا بك</h2>
+  <p>موقع القرآن الكريم والأذكار</p>
+</section>
 
-  <div id="surahContent"></div>
+<!-- الصفحة 2 -->
+<section>
+  <h2>📖 القرآن الكريم (نموذج)</h2>
+  <div class="card">الفاتحة</div>
+  <div class="card">البقرة</div>
+  <div class="card">آل عمران</div>
+  <p>📌 (أنت لاحقًا تربط القرآن الكامل هنا)</p>
+</section>
 
-  <!-- ربط ملف القرآن -->
-  <script src="quran.js"></script>
+<!-- الصفحة 3 -->
+<section>
+  <h2>🤲 الأذكار</h2>
+  <div class="card">سبحان الله</div>
+  <div class="card">الحمد لله</div>
+  <div class="card">الله أكبر</div>
+  <div class="card">لا إله إلا الله</div>
+  <div class="card">أستغفر الله</div>
+  <div class="card">لا حول ولا قوة إلا بالله</div>
+  <div class="card">سبحان الله وبحمده</div>
+  <div class="card">سبحان الله العظيم</div>
+  <div class="card">اللهم صل وسلم على نبينا محمد</div>
+</section>
 
-  <script>
-    const select = document.getElementById("surahSelect");
-    const content = document.getElementById("surahContent");
+<!-- الصفحة 4 -->
+<section>
+  <h2>📿 المسبحة</h2>
+  <h1 id="zikr">سبحان الله</h1>
+  <h1 id="count">0</h1>
 
-    // تعبئة القائمة
-    quran.forEach((surah, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = surah.name;
-      select.appendChild(option);
-    });
+  <button onclick="tasbeeh()">➕ تسبيح</button>
+  <button onclick="reset()">🔄 تصفير</button>
+  <button onclick="changeZikr()">🔁 تغيير الذكر</button>
+</section>
 
-    // عند اختيار سورة
-    select.addEventListener("change", () => {
-      content.innerHTML = "";
+<script>
+/* التنقل */
+const pages=document.querySelectorAll("section");
+let index=0;
 
-      if (select.value === "") return;
+function show(){
+  pages.forEach(p=>p.classList.remove("active"));
+  pages[index].classList.add("active");
+}
+function next(){
+  if(index<pages.length-1){index++;show();}
+}
+function prev(){
+  if(index>0){index--;show();}
+}
 
-      const surah = quran[select.value];
+/* الوضع الداكن */
+let dark=false;
+function toggleMode(){
+  dark=!dark;
+  document.body.classList.toggle("dark");
+  document.getElementById("modeBtn").textContent=dark?"☀ فاتح":"🌙 داكن";
+}
 
-      // اسم الآيات (أي واحد موجود)
-      const verses =
-        surah.ayahs ||
-        surah.verses ||
-        surah.ayat;
+/* المسبحة */
+let count=0;
+let zikrIndex=0;
+const azkar=[
+"سبحان الله",
+"الحمد لله",
+"الله أكبر",
+"لا إله إلا الله",
+"أستغفر الله",
+"لا حول ولا قوة إلا بالله"
+];
 
-      if (!verses) {
-        content.innerHTML = "❌ لا توجد آيات";
-        return;
-      }
-
-      verses.forEach((ayah, i) => {
-        const text = ayah.text || ayah;
-        const p = document.createElement("p");
-        p.textContent = `${i + 1}. ${text}`;
-        content.appendChild(p);
-      });
-    });
-  </script>
+function tasbeeh(){
+  count++;
+  document.getElementById("count").textContent=count;
+}
+function reset(){
+  count=0;
+  document.getElementById("count").textContent=count;
+}
+function changeZikr(){
+  zikrIndex=(zikrIndex+1)%azkar.length;
+  document.getElementById("zikr").textContent=azkar[zikrIndex];
+  reset();
+}
+</script>
 
 </body>
 </html>
