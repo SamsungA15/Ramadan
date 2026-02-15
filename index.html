@@ -5,48 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>القرآن الكريم</title>
 
-<link rel="manifest" href="manifest.json">
+<!-- ربط ملف القرآن -->
 <script src="quran.js"></script>
 
 <style>
 body {
-  font-family: Tahoma, Arial;
+  font-family: Tahoma, Arial, sans-serif;
   margin: 0;
-  background: #f4f4f4;
+  background: #f9f9f9;
   color: #222;
-  transition: 0.3s;
-}
-
-body.dark {
-  background: #121212;
-  color: #f4f4f4;
+  padding: 15px;
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
   background: #2e7d32;
   color: white;
-}
-
-header a, header button {
-  color: white;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-main {
-  padding: 15px;
+  padding: 10px;
+  text-align: center;
+  font-size: 20px;
 }
 
 select {
   font-size: 16px;
-  padding: 5px;
+  padding: 8px;
+  margin-top: 10px;
+  width: 100%;
 }
 
 p {
@@ -55,18 +38,11 @@ p {
 }
 </style>
 </head>
-
 <body>
-<header>
-  <a href="adhkar.html">التالي</a>
-  <button onclick="toggleMode()" id="modeBtn">داكن</button>
-  <span>القرآن الكريم</span>
-</header>
 
-<main>
+<header>القرآن الكريم</header>
 
-<label><strong>اختر السورة:</strong></label><br><br>
-
+<label for="surahSelect"><strong>اختر السورة:</strong></label>
 <select id="surahSelect" onchange="showSurah()">
   <option value="">-- اختر سورة --</option>
 </select>
@@ -75,45 +51,32 @@ p {
 
 <div id="surahContent"></div>
 
-</main>
-
+<!-- كود العرض -->
 <script>
-function toggleMode(){
-  document.body.classList.toggle("dark");
-  document.getElementById("modeBtn").textContent =
-    document.body.classList.contains("dark") ? "فاتح" : "داكن";
-}
-
-// تعبئة القائمة
+// نملأ قائمة السور
 const select = document.getElementById("surahSelect");
 const content = document.getElementById("surahContent");
 
 quran.forEach((s, i) => {
   const opt = document.createElement("option");
   opt.value = i;
-  opt.textContent = s.number + " - " + s.name;
+  opt.textContent = s.name;
   select.appendChild(opt);
 });
 
+// عند اختيار السورة
 function showSurah() {
   const i = select.value;
   if (i === "") {
     content.innerHTML = "";
     return;
   }
-
-  const s = quran[i];
-  let html = `<h2>سورة ${s.name}</h2>`;
-
-  s.verses.forEach((v, n) => {
-    html += `<p>${n + 1}. ${v}</p>`;
+  const surah = quran[i];
+  let html = `<h2>سورة ${surah.name}</h2>`;
+  surah.verses.forEach((v, idx) => {
+    html += `<p>${idx + 1}. ${v}</p>`;
   });
-
   content.innerHTML = html;
-}
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
 }
 </script>
 
