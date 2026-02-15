@@ -1,3 +1,4 @@
+const quran =
 [
   {
     "id": 1,
