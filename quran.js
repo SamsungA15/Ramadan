@@ -1,12 +1,13 @@
-const quran =
-[
+const quran = [
   {
     "id": 1,
     "name": "الفاتحة",
     "transliteration": "Al-Fatihah",
     "type": "meccan",
     "total_verses": 7,
-    "verses": [
+    "verses": 
+      ]
+  }
       {
         "id": 1,
         "text": "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ"
