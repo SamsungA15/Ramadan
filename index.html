@@ -1,256 +1,199 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>القرآن والمسبحة</title>
+<title>رمضان | القرآن والأذكار</title>
 
 <style>
-:root{
-  --bg:#ffffff;
-  --text:#000000;
-  --card:#f2f2f2;
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  background:#f5f5f5;
+  color:#000;
 }
 .dark{
-  --bg:#121212;
-  --text:#ffffff;
-  --card:#1e1e1e;
-}
-body{
-  margin:0;
-  font-family:Arial;
-  direction:rtl;
-  background:var(--bg);
-  color:var(--text);
+  background:#121212;
+  color:#fff;
 }
 header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:10px;
-  background:var(--card);
+  background:#2c7a7b;
+  color:#fff;
 }
-button, select{
-  padding:8px;
-  font-size:16px;
+button{
+  padding:8px 12px;
+  margin:5px;
+  cursor:pointer;
 }
-section{
-  display:none;
-  padding:20px;
-}
-section.active{
-  display:block;
-}
+.page{display:none;padding:15px}
+.page.active{display:block}
 .card{
-  background:var(--card);
   padding:10px;
-  margin:8px 0;
-  border-radius:6px;
-  line-height:1.8;
+  margin:5px 0;
+  border:1px solid #ccc;
 }
+select{width:100%;padding:8px}
+.counter{font-size:30px;text-align:center;margin:20px}
 </style>
 </head>
 
 <body>
 
 <header>
-  <button onclick="prev()">⬅ السابق</button>
-  <button onclick="toggleMode()" id="modeBtn">🌙 داكن</button>
-  <button onclick="next()">التالي ➡</button>
+  <button onclick="goBack()">السابق</button>
+  <button onclick="toggleTheme()" id="themeBtn">داكن</button>
+  <button onclick="goNext()">التالي</button>
 </header>
 
-<!-- الصفحة 0 -->
-<section class="active">
-  <h2>🌙 مرحبًا بك</h2>
-  <p>اختر سورة أو ذكر ثم انتقل</p>
-</section>
+<!-- الصفحة الرئيسية -->
+<div id="home" class="page active">
+  <h2>اختر القسم</h2>
+  <button onclick="openPage('quranPage')">📖 القرآن</button>
+  <button onclick="openPage('athkarPage')">🤲 الأذكار</button>
+  <button onclick="openPage('tasbeehPage')">📿 المسبحة</button>
+</div>
 
-<!-- الصفحة 1: اختيار سورة -->
-<section>
-  <h2>📖 اختر سورة</h2>
-  <select id="surahSelect">
-    <option value="">اختر سورة</option>
-  </select>
-</section>
+<!-- صفحة القرآن -->
+<div id="quranPage" class="page">
+  <h2>القرآن الكريم</h2>
+  <select id="surahSelect"></select>
+</div>
 
-<!-- الصفحة 2: محتوى السورة -->
-<section>
-  <h2 id="surahTitle">السورة</h2>
+<!-- صفحة السورة -->
+<div id="surahPage" class="page">
+  <h2 id="surahTitle"></h2>
   <div id="surahContent"></div>
-</section>
+</div>
 
-<!-- الصفحة 3: المسبحة -->
-<section>
-  <h2>📿 المسبحة</h2>
+<!-- صفحة الأذكار -->
+<div id="athkarPage" class="page">
+  <h2>الأذكار</h2>
+  <div class="card">أذكار الصباح</div>
+  <div class="card">أذكار المساء</div>
+  <div class="card">أذكار رمضان</div>
+  <div class="card">أذكار ليلة القدر</div>
+  <div class="card">أذكار يوم الجمعة</div>
+</div>
+
+<!-- صفحة المسبحة -->
+<div id="tasbeehPage" class="page">
+  <h2>المسبحة</h2>
 
   <select id="zikrSelect">
     <option value="">اختر الذكر</option>
+    <option>سبحان الله</option>
+    <option>الحمد لله</option>
+    <option>الله أكبر</option>
+    <option>لا إله إلا الله</option>
+    <option>لا حول ولا قوة إلا بالله</option>
+    <option>أستغفر الله</option>
   </select>
 
-  <h1 id="currentZikr"></h1>
-  <h1 id="count">0</h1>
+  <div class="counter" id="count">0</div>
 
-  <button onclick="tasbeeh()">➕ تسبيح</button>
-  <button onclick="reset()">🔄 تصفير</button>
-</section>
+  <button onclick="increment()">تسبيح</button>
+  <button onclick="reset()">تصفير</button>
+</div>
 
-<!-- ربط القرآن -->
+<!-- تحميل القرآن -->
 <script src="quran.js"></script>
 
 <script>
-/* =========================
-   التنقل بين الصفحات
-========================= */
-const pages=document.querySelectorAll("section");
-let page = parseInt(localStorage.getItem("lastPage")) || 0;
+let historyPages=["home"];
+let currentIndex=0;
+let selectedSurahIndex=null;
+let count=0;
 
-function show(){
-  pages.forEach(p=>p.classList.remove("active"));
-  pages[page].classList.add("active");
-  localStorage.setItem("lastPage", page);
-}
-show();
-
-function next(){
-  if(page===1 && selectedSurahIndex===null){
-    alert("اختر سورة أولًا");
-    return;
-  }
-  if(page<pages.length-1){
-    page++;
-    show();
-  }
-}
-function prev(){
-  if(page>0){
-    page--;
-    show();
-  }
-}
-
-/* =========================
-   الوضع الداكن / الفاتح
-========================= */
-let dark = localStorage.getItem("darkMode")==="true";
-
-if(dark){
+/* حفظ تلقائي */
+if(localStorage.theme==="dark"){
   document.body.classList.add("dark");
-  document.getElementById("modeBtn").textContent="☀ فاتح";
+  themeBtn.textContent="فاتح";
+}
+if(localStorage.count){
+  count=Number(localStorage.count);
+  document.getElementById("count").textContent=count;
 }
 
-function toggleMode(){
-  dark=!dark;
+/* تنقل */
+function openPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  historyPages.push(id);
+  currentIndex=historyPages.length-1;
+}
+function goBack(){
+  if(currentIndex>0){
+    currentIndex--;
+    openPage(historyPages[currentIndex]);
+  }
+}
+function goNext(){
+  if(document.getElementById("quranPage").classList.contains("active")){
+    loadSurah();
+    openPage("surahPage");
+  }
+}
+
+/* الوضع */
+function toggleTheme(){
   document.body.classList.toggle("dark");
-  document.getElementById("modeBtn").textContent=dark?"☀ فاتح":"🌙 داكن";
-  localStorage.setItem("darkMode", dark);
+  let dark=document.body.classList.contains("dark");
+  themeBtn.textContent=dark?"فاتح":"داكن";
+  localStorage.theme=dark?"dark":"light";
 }
 
-/* =========================
-   القرآن + الحفظ التلقائي
-========================= */
+/* تحميل السور */
 const surahSelect=document.getElementById("surahSelect");
-const surahContent=document.getElementById("surahContent");
 const surahTitle=document.getElementById("surahTitle");
+const surahContent=document.getElementById("surahContent");
 
-let selectedSurahIndex = localStorage.getItem("lastSurah");
-if(selectedSurahIndex!==null){
-  selectedSurahIndex = parseInt(selectedSurahIndex);
-}
-
-quran.forEach((s,i)=>{
+Object.values(quran).forEach((s,i)=>{
   const o=document.createElement("option");
   o.value=i;
   o.textContent=s.name;
   surahSelect.appendChild(o);
 });
 
-if(selectedSurahIndex!==null){
-  surahSelect.value = selectedSurahIndex;
-}
-
 surahSelect.onchange=()=>{
-  selectedSurahIndex = parseInt(surahSelect.value);
-  localStorage.setItem("lastSurah", selectedSurahIndex);
+  selectedSurahIndex=Number(surahSelect.value);
+  localStorage.surah=selectedSurahIndex;
 };
 
+/* حل المشكلة نهائيًا */
 function loadSurah(){
   if(selectedSurahIndex===null) return;
   surahContent.innerHTML="";
-  const surah = quran[selectedSurahIndex];
-  surahTitle.textContent = surah.name;
-  surah.ayahs.forEach((a,i)=>{
-    const d=document.createElement("div");
+
+  let surah = Object.values(quran)[selectedSurahIndex];
+  if(!surah){ surahContent.textContent="لا توجد سورة"; return;}
+
+  surahTitle.textContent=surah.name;
+
+  let ayahs=surah.ayahs;
+  if(!Array.isArray(ayahs)) ayahs=Object.values(ayahs);
+
+  ayahs.forEach((a,i)=>{
+    let d=document.createElement("div");
     d.className="card";
-    d.textContent=(i+1)+" - "+a.text;
+    d.textContent=(i+1)+" - "+a;
     surahContent.appendChild(d);
   });
 }
 
-/* =========================
-   تحميل السورة عند فتح صفحتها
-========================= */
-const observer=new MutationObserver(()=>{
-  if(page===2){
-    loadSurah();
-  }
-});
-observer.observe(document.body,{attributes:true,subtree:true});
-
-/* =========================
-   المسبحة + الحفظ التلقائي
-========================= */
-const azkar=[
-"سبحان الله",
-"الحمد لله",
-"الله أكبر",
-"لا إله إلا الله",
-"أستغفر الله",
-"لا حول ولا قوة إلا بالله",
-"سبحان الله وبحمده",
-"سبحان الله العظيم",
-"اللهم صل وسلم على نبينا محمد",
-"لا إله إلا أنت سبحانك إني كنت من الظالمين",
-"حسبنا الله ونعم الوكيل"
-];
-
-const zikrSelect=document.getElementById("zikrSelect");
-const currentZikr=document.getElementById("currentZikr");
-let count = parseInt(localStorage.getItem("tasbeehCount")) || 0;
-
-azkar.forEach(z=>{
-  const o=document.createElement("option");
-  o.value=z;
-  o.textContent=z;
-  zikrSelect.appendChild(o);
-});
-
-document.getElementById("count").textContent = count;
-
-const savedZikr = localStorage.getItem("lastZikr");
-if(savedZikr){
-  zikrSelect.value = savedZikr;
-  currentZikr.textContent = savedZikr;
-}
-
-zikrSelect.onchange=()=>{
-  currentZikr.textContent = zikrSelect.value;
-  localStorage.setItem("lastZikr", zikrSelect.value);
-  reset();
-};
-
-function tasbeeh(){
-  if(!zikrSelect.value){
-    alert("اختر ذكرًا أولًا");
-    return;
-  }
+/* مسبحة */
+function increment(){
+  if(!zikrSelect.value) return;
   count++;
-  document.getElementById("count").textContent = count;
-  localStorage.setItem("tasbeehCount", count);
+  document.getElementById("count").textContent=count;
+  localStorage.count=count;
 }
-
 function reset(){
-  count = 0;
-  document.getElementById("count").textContent = count;
-  localStorage.setItem("tasbeehCount", count);
+  count=0;
+  document.getElementById("count").textContent=0;
+  localStorage.count=0;
 }
 </script>
 
