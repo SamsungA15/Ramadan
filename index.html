@@ -1,37 +1,86 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>اختبار القائمة</title>
+  <meta charset="UTF-8">
+  <title>القرآن الكريم</title>
 
-<!-- تحميل القرآن -->
-<script src="quran.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    #surahContent p {
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      line-height: 1.8;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>اختر سورة</h2>
+  <h2>اختر سورة</h2>
 
-<select id="surahSelect">
-  <option>جاري التحميل...</option>
-</select>
+  <select id="surahSelect">
+    <option value="">-- اختر سورة --</option>
+  </select>
 
-<script>
-const select = document.getElementById("surahSelect");
+  <div id="surahContent"></div>
 
-if (typeof quran === "undefined") {
-  select.innerHTML = "<option>❌ ملف القرآن لم يُحمَّل</option>";
-} else {
-  select.innerHTML = '<option value="">-- اختر سورة --</option>';
+  <!-- ربط ملف القرآن -->
+  <script src="quran.js"></script>
 
-  quran.forEach((s, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = s.name;
-    select.appendChild(opt);
-  });
-}
-</script>
+  <script>
+    const select = document.getElementById("surahSelect");
+    const content = document.getElementById("surahContent");
+
+    // تعبئة القائمة
+    quran.forEach((surah, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = surah.name;
+      select.appendChild(option);
+    });
+
+    // عند اختيار سورة
+    select.addEventListener("change", () => {
+      content.innerHTML = "";
+
+      if (select.value === "") return;
+
+      const surah = quran[select.value];
+
+      // اسم الآيات (أي واحد موجود)
+      const verses =
+        surah.ayahs ||
+        surah.verses ||
+        surah.ayat;
+
+      if (!verses) {
+        content.innerHTML = "❌ لا توجد آيات";
+        return;
+      }
+
+      verses.forEach((ayah, i) => {
+        const text = ayah.text || ayah;
+        const p = document.createElement("p");
+        p.textContent = `${i + 1}. ${text}`;
+        content.appendChild(p);
+      });
+    });
+  </script>
 
 </body>
 </html>
