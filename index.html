@@ -5,130 +5,88 @@
 <title>القرآن الكريم</title>
 
 <style>
-body{
-  font-family: "Tahoma", sans-serif;
-  background:#f5f5f5;
-  margin:0;
-  padding:0;
-  text-align:center;
+body {
+  font-family: Tahoma;
+  background: #121212;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
 }
 
-header{
-  background:#2c3e50;
-  color:white;
-  padding:15px;
+select, button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
 }
 
-nav button{
-  margin:5px;
-  padding:10px 15px;
-  font-size:16px;
-  cursor:pointer;
+#verses {
+  margin-top: 20px;
+  line-height: 2.2;
+  font-size: 20px;
 }
 
-select{
-  margin:20px;
-  padding:10px;
-  font-size:18px;
+.verse {
+  margin-bottom: 10px;
 }
 
-#surahContent{
-  padding:20px;
-  max-width:800px;
-  margin:auto;
-  line-height:2.2;
-  font-size:20px;
-  background:white;
-  border-radius:10px;
-}
-
-.ayah{
-  margin-bottom:15px;
+nav {
+  margin-top: 20px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>📖 القرآن الكريم</h1>
-  <nav>
-    <button onclick="goPage('adhkar.html')">الأذكار</button>
-    <button onclick="goPage('tasbeeh.html')">المسبحة</button>
-  </nav>
-</header>
+<h2>📖 القرآن الكريم</h2>
 
-<select id="surahSelect">
-  <option value="">اختر سورة</option>
-</select>
+<select id="surahSelect"></select>
 
-<div id="surahContent"></div>
+<div id="verses"></div>
 
-<!-- مهم جدًا -->
+<div>صدق الله العظيم</div>
+
+<nav>
+  <button onclick="location.href='adhkar.html'">الأذكار</button>
+  <button onclick="location.href='tasbeeh.html'">المسبحة</button>
+</nav>
+
 <script src="quran.js"></script>
-
 <script>
-const surahSelect = document.getElementById("surahSelect");
-const surahContent = document.getElementById("surahContent");
+const select = document.getElementById("surahSelect");
+const versesDiv = document.getElementById("verses");
 
-/* تحميل أسماء السور */
-function populateSurahs(){
-  surahSelect.innerHTML = '<option value="">اختر سورة</option>';
+// تحميل أسماء السور
+quran.forEach(surah => {
+  const opt = document.createElement("option");
+  opt.value = surah.id;
+  opt.textContent = surah.name;
+  select.appendChild(opt);
+});
 
-  quran.forEach(surah=>{
-    const option = document.createElement("option");
-    option.value = surah.id;
-    option.textContent = surah.name;
-    surahSelect.appendChild(option);
-  });
-}
+// تحميل آخر سورة
+const saved = localStorage.getItem("lastSurah");
+if (saved) select.value = saved;
 
-/* عرض الآيات */
-function loadSurah(id){
+// عرض السورة
+function showSurah(id) {
+  versesDiv.innerHTML = "";
   const surah = quran.find(s => s.id == id);
-  if(!surah) return;
+  if (!surah) return;
 
-  surahContent.innerHTML = "";
-
-  surah.verses.forEach((v, i)=>{
+  surah.verses.forEach(v => {
     const div = document.createElement("div");
-    div.className = "ayah";
-    div.textContent = `${i + 1} - ${v.text}`;
-    surahContent.appendChild(div);
+    div.className = "verse";
+    div.textContent = `(${v.id}) ${v.text}`;
+    versesDiv.appendChild(div);
   });
 
-  const end = document.createElement("div");
-  end.style.marginTop = "25px";
-  end.style.fontWeight = "bold";
-  end.textContent = "صدق الله العظيم";
-  surahContent.appendChild(end);
-
-  /* حفظ آخر سورة */
   localStorage.setItem("lastSurah", id);
 }
 
-/* عند تغيير السورة */
-surahSelect.addEventListener("change", ()=>{
-  if(surahSelect.value){
-    loadSurah(surahSelect.value);
-  }
-});
+select.addEventListener("change", e => showSurah(e.target.value));
 
-/* استرجاع آخر سورة عند الرجوع */
-window.addEventListener("load", ()=>{
-  populateSurahs();
-
-  const last = localStorage.getItem("lastSurah");
-  if(last){
-    surahSelect.value = last;
-    loadSurah(last);
-  }
-});
-
-/* الانتقال بين الصفحات */
-function goPage(page){
-  window.location.href = page;
-}
+// تشغيل تلقائي
+showSurah(select.value || 1);
 </script>
 
 </body>
