@@ -1,4 +1,4 @@
-const quran= [
+window.quran = [
   {
     "id": 1,
     "name": "الفاتحة",
