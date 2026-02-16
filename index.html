@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>القرآن الكريم</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: "Amiri", serif;
-  background: #111;
-  color: #fff;
+@@ -14,50 +14,54 @@ body {
 }
 
 header {
@@ -34,6 +22,10 @@ nav button {
   color: #fff;
   font-size: 18px;
   cursor: pointer;
+}
+
+.nav-scroll {
+  overflow-x: auto;
 }
 
 nav button:hover {
@@ -61,11 +53,7 @@ select {
   margin-bottom: 10px;
   padding: 15px;
   border-radius: 8px;
-  font-size: 20px;
-  line-height: 1.8;
-}
-
-h3 {
+@@ -69,69 +73,161 @@ h3 {
   margin-top: 30px;
   color: #ffd700;
 }
@@ -91,6 +79,75 @@ h3 {
   margin-top: 10px;
   background: #a00;
 }
+
+.compass-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.compass {
+  width: min(280px, 85vw);
+  aspect-ratio: 1;
+  border: 6px solid #ffd700;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at center, #1d1d1d 40%, #111 100%);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.25);
+}
+
+.compass .needle {
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 12%;
+  width: 6px;
+  height: 38%;
+  background: linear-gradient(to bottom, #ff3b30 50%, #fff 50%);
+  border-radius: 10px;
+  transform-origin: 50% 100%;
+  transition: transform 0.25s ease-out;
+}
+
+.compass .center-dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffd700;
+  left: calc(50% - 9px);
+  top: calc(50% - 9px);
+}
+
+.cardinal {
+  position: absolute;
+  color: #ffd700;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.north { top: 8px; left: calc(50% - 9px); }
+.south { bottom: 8px; left: calc(50% - 9px); }
+.east { right: 10px; top: calc(50% - 9px); }
+.west { left: 10px; top: calc(50% - 9px); }
+
+.meta {
+  text-align: center;
+  color: #ddd;
+  line-height: 1.8;
+}
+
+.permission-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #ffd700;
+  color: #111;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -99,15 +156,39 @@ h3 {
 <header>📖 تطبيق القرآن الكريم</header>
 
 <nav>
+<nav class="nav-scroll">
   <button onclick="showPage('quran')">القرآن</button>
   <button onclick="showPage('adhkar')">الأذكار</button>
   <button onclick="showPage('tasbeeh')">المسبحة</button>
+  <button onclick="showPage('compassPage')">البوصلة</button>
 </nav>
 
 <!-- صفحة القرآن -->
 <div id="quran" class="page active">
   <select id="surahSelect"></select>
   <div id="ayahs"></div>
+</div>
+
+<!-- صفحة البوصلة -->
+<div id="compassPage" class="page">
+  <h3>🧭 بوصلة الاتجاه</h3>
+  <div class="compass-wrap">
+    <div class="compass" id="compass">
+      <div class="cardinal north">N</div>
+      <div class="cardinal south">S</div>
+      <div class="cardinal east">E</div>
+      <div class="cardinal west">W</div>
+      <div id="needle" class="needle"></div>
+      <div class="center-dot"></div>
+    </div>
+
+    <button id="enableCompass" class="permission-btn" style="display:none;">تفعيل البوصلة</button>
+
+    <div class="meta">
+      <div>الاتجاه الحالي: <span id="heading">0°</span></div>
+      <div id="compassStatus">حرّك الهاتف لبدء قراءة الاتجاه.</div>
+    </div>
+  </div>
 </div>
 
 <!-- صفحة الأذكار -->
@@ -135,87 +216,7 @@ h3 {
 
 <h3>🌙 أذكار الاستيقاظ</h3>
 <div class="ayah">الحمد لله الذي أحيانا بعدما أماتنا وإليه النشور</div>
-
-<h3>🤲 أذكار بعد الصلاة</h3>
-<div class="ayah">أستغفر الله (3 مرات)</div>
-<div class="ayah">اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام</div>
-<div class="ayah">سبحان الله (33) الحمد لله (33) الله أكبر (33)</div>
-<div class="ayah">لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير</div>
-
-<h3>🌙 أذكار رمضان</h3>
-<div class="ayah">اللهم بلغنا رمضان لا فاقدين ولا مفقودين</div>
-<div class="ayah">اللهم أعنا فيه على الصيام والقيام</div>
-<div class="ayah">اللهم تقبل منا صالح الأعمال</div>
-
-<h3>✨ أذكار ليلة القدر</h3>
-<div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
-<div class="ayah">اللهم اعتق رقابنا من النار</div>
-
-<h3>🕌 أذكار يوم الجمعة</h3>
-<div class="ayah">اللهم صل وسلم وبارك على نبينا محمد</div>
-<div class="ayah">اللهم اجعل هذا اليوم فرجًا لكل مهموم</div>
-<div class="ayah">اللهم اغفر للمسلمين والمسلمات</div>
-
-<h3>📿 أذكار عامة</h3>
-<div class="ayah">سبحان الله</div>
-<div class="ayah">الحمد لله</div>
-<div class="ayah">الله أكبر</div>
-<div class="ayah">لا إله إلا الله</div>
-<div class="ayah">لا حول ولا قوة إلا بالله</div>
-<div class="ayah">أستغفر الله العظيم</div>
-<div class="ayah">حسبنا الله ونعم الوكيل</div>
-
-</div>
-
-<!-- صفحة المسبحة -->
-<div id="tasbeeh" class="page">
-
-<select onchange="changeTasbeeh(this.value)">
-  <option>سبحان الله</option>
-  <option>الحمد لله</option>
-  <option>الله أكبر</option>
-  <option>لا إله إلا الله</option>
-  <option>سبحان الله وبحمده</option>
-  <option>سبحان الله العظيم</option>
-  <option>لا حول ولا قوة إلا بالله</option>
-  <option>أستغفر الله</option>
-  <option>اللهم صل وسلم على نبينا محمد</option>
-</select>
-
-<div id="tasbeehText" class="ayah">سبحان الله</div>
-<div id="count" class="counter">0</div>
-
-<button class="tasbeeh-btn" onclick="increment()">📿 تسبيح</button>
-<button class="tasbeeh-btn reset" onclick="reset()">🔄 تصفير</button>
-
-</div>
-
-<script src="quran.js"></script>
-
-<script>
-const surahSelect = document.getElementById("surahSelect");
-const ayahsDiv = document.getElementById("ayahs");
-
-quran.forEach(s => {
-  const opt = document.createElement("option");
-  opt.value = s.id - 1;
-  opt.textContent = s.name;
-  surahSelect.appendChild(opt);
-});
-
-function loadSurah(index) {
-  ayahsDiv.innerHTML = "";
-  quran[index].verses.forEach(v => {
-    const d = document.createElement("div");
-    d.className = "ayah";
-    d.textContent = v.text + " ﴿" + v.id + "﴾";
-    ayahsDiv.appendChild(d);
-  });
-  ayahsDiv.innerHTML += `<div class="ayah">صدق الله العظيم</div>`;
-}
-
-surahSelect.addEventListener("change", e => {
-  loadSurah(e.target.value);
+@@ -219,29 +315,78 @@ surahSelect.addEventListener("change", e => {
 });
 
 loadSurah(0);
@@ -240,6 +241,55 @@ function reset() {
 function changeTasbeeh(text) {
   document.getElementById("tasbeehText").textContent = text;
   reset();
+}
+
+const needle = document.getElementById("needle");
+const headingText = document.getElementById("heading");
+const compassStatus = document.getElementById("compassStatus");
+const enableCompassBtn = document.getElementById("enableCompass");
+
+function updateCompass(angle) {
+  if (typeof angle !== "number" || Number.isNaN(angle)) return;
+  const normalized = (angle + 360) % 360;
+  needle.style.transform = `rotate(${normalized}deg)`;
+  headingText.textContent = `${Math.round(normalized)}°`;
+  compassStatus.textContent = "البوصلة تعمل الآن.";
+}
+
+function handleOrientation(event) {
+  if (event.webkitCompassHeading != null) {
+    updateCompass(event.webkitCompassHeading);
+    return;
+  }
+
+  if (event.alpha != null) {
+    updateCompass(360 - event.alpha);
+  }
+}
+
+function startCompass() {
+  window.addEventListener("deviceorientation", handleOrientation, true);
+}
+
+if (typeof DeviceOrientationEvent !== "undefined" &&
+    typeof DeviceOrientationEvent.requestPermission === "function") {
+  enableCompassBtn.style.display = "inline-block";
+  compassStatus.textContent = "اضغط تفعيل البوصلة للسماح بالوصول إلى المستشعر.";
+  enableCompassBtn.addEventListener("click", async () => {
+    try {
+      const permission = await DeviceOrientationEvent.requestPermission();
+      if (permission === "granted") {
+        startCompass();
+        enableCompassBtn.style.display = "none";
+      } else {
+        compassStatus.textContent = "تم رفض إذن المستشعر.";
+      }
+    } catch {
+      compassStatus.textContent = "تعذر تفعيل البوصلة على هذا الجهاز.";
+    }
+  });
+} else {
+  startCompass();
 }
 </script>
 
