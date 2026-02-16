@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>القرآن الكريم</title>
+<title>تطبيق إسلامي شامل</title>
 
 <style>
 body {
@@ -20,7 +20,6 @@ header {
 }
 nav {
   display: flex;
-  justify-content: space-around;
   background: #222;
 }
 nav button {
@@ -29,7 +28,7 @@ nav button {
   background: none;
   border: none;
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
 }
 nav button:hover {
@@ -54,73 +53,136 @@ select {
   padding: 15px;
   border-radius: 8px;
   font-size: 20px;
-  line-height: 1.8;
+  line-height: 1.9;
 }
 h3 {
   margin-top: 30px;
   color: #ffd700;
 }
 .counter {
-  font-size: 40px;
+  font-size: 42px;
   text-align: center;
   margin: 20px 0;
 }
 .tasbeeh-btn {
   width: 100%;
   padding: 15px;
-  font-size: 22px;
+  font-size: 20px;
   background: #444;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 .reset {
-  margin-top: 10px;
   background: #a00;
+}
+.compass {
+  text-align: center;
+  margin-top: 20px;
+}
+.needle {
+  width: 4px;
+  height: 120px;
+  background: red;
+  margin: 0 auto;
+  transform-origin: bottom;
 }
 </style>
 </head>
 
 <body>
 
-<header>📖 تطبيق القرآن الكريم</header>
+<header>📖 تطبيق إسلامي شامل</header>
 
 <nav>
   <button onclick="showPage('quran')">القرآن</button>
   <button onclick="showPage('adhkar')">الأذكار</button>
   <button onclick="showPage('tasbeeh')">المسبحة</button>
+  <button onclick="showPage('compass')">القبلة</button>
 </nav>
 
+<!-- القرآن -->
 <div id="quran" class="page active">
   <select id="surahSelect"></select>
   <div id="ayahs"></div>
 </div>
 
+<!-- الأذكار -->
 <div id="adhkar" class="page">
-  <h3>📿 الأذكار</h3>
-  <div class="ayah">سبحان الله</div>
-  <div class="ayah">الحمد لله</div>
-  <div class="ayah">الله أكبر</div>
-  <div class="ayah">لا إله إلا الله</div>
-  <div class="ayah">لا حول ولا قوة إلا بالله</div>
-  <div class="ayah">أستغفر الله</div>
+
+<h3>🌅 أذكار الصباح</h3>
+<div class="ayah">أصبحنا وأصبح الملك لله والحمد لله...</div>
+<div class="ayah">اللهم بك أصبحنا وبك أمسينا...</div>
+<div class="ayah">سبحان الله وبحمده (100 مرة)</div>
+<div class="ayah">لا إله إلا الله وحده لا شريك له (100 مرة)</div>
+
+<h3>🌙 أذكار المساء</h3>
+<div class="ayah">أمسينا وأمسى الملك لله...</div>
+<div class="ayah">باسم الله الذي لا يضر مع اسمه شيء (3 مرات)</div>
+
+<h3>🛏️ أذكار قبل النوم</h3>
+<div class="ayah">باسمك اللهم أموت وأحيا</div>
+<div class="ayah">سبحان الله 33 – الحمد لله 33 – الله أكبر 34</div>
+
+<h3>🌙 أذكار الاستيقاظ</h3>
+<div class="ayah">الحمد لله الذي أحيانا بعدما أماتنا</div>
+
+<h3>🤲 أذكار بعد الصلاة</h3>
+<div class="ayah">أستغفر الله (3)</div>
+<div class="ayah">اللهم أنت السلام ومنك السلام</div>
+
+<h3>🌙 أذكار رمضان</h3>
+<div class="ayah">اللهم بلغنا رمضان</div>
+<div class="ayah">اللهم تقبل صيامنا وقيامنا</div>
+
+<h3>✨ أذكار ليلة القدر</h3>
+<div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
+
+<h3>🕌 أذكار يوم الجمعة</h3>
+<div class="ayah">اللهم صل وسلم على نبينا محمد</div>
+
+<h3>📿 أذكار عامة</h3>
+<div class="ayah">سبحان الله</div>
+<div class="ayah">الحمد لله</div>
+<div class="ayah">الله أكبر</div>
+<div class="ayah">لا إله إلا الله</div>
+<div class="ayah">لا حول ولا قوة إلا بالله</div>
+
 </div>
 
+<!-- المسبحة -->
 <div id="tasbeeh" class="page">
-  <select onchange="changeTasbeeh(this.value)">
-    <option>سبحان الله</option>
-    <option>الحمد لله</option>
-    <option>الله أكبر</option>
-    <option>لا إله إلا الله</option>
-    <option>لا حول ولا قوة إلا بالله</option>
-  </select>
 
-  <div id="tasbeehText" class="ayah">سبحان الله</div>
-  <div id="count" class="counter">0</div>
+<select onchange="changeTasbeeh(this.value)">
+  <option>سبحان الله</option>
+  <option>الحمد لله</option>
+  <option>الله أكبر</option>
+  <option>لا إله إلا الله</option>
+  <option>سبحان الله وبحمده</option>
+  <option>سبحان الله العظيم</option>
+  <option>لا حول ولا قوة إلا بالله</option>
+  <option>أستغفر الله</option>
+  <option>اللهم صل وسلم على نبينا محمد</option>
+</select>
 
-  <button class="tasbeeh-btn" onclick="increment()">📿 تسبيح</button>
-  <button class="tasbeeh-btn reset" onclick="reset()">🔄 تصفير</button>
+<div id="tasbeehText" class="ayah">سبحان الله</div>
+<div id="count" class="counter">0</div>
+
+<button class="tasbeeh-btn" onclick="increment()">📿 تسبيح</button>
+<button class="tasbeeh-btn reset" onclick="reset()">🔄 تصفير</button>
+
+</div>
+
+<!-- البوصلة -->
+<div id="compass" class="page">
+  <h3>🧭 اتجاه القبلة</h3>
+  <div class="compass">
+    <div id="needle" class="needle"></div>
+    <p id="heading">---</p>
+    <p id="compassStatus">حرّك الهاتف</p>
+  </div>
 </div>
 
 <script src="quran.js"></script>
@@ -131,21 +193,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const surahSelect = document.getElementById("surahSelect");
   const ayahsDiv = document.getElementById("ayahs");
 
-  if (!window.quran || !Array.isArray(window.quran)) {
-    ayahsDiv.innerHTML = "<div class='ayah'>❌ لم يتم تحميل ملف القرآن</div>";
+  if (!window.quran) {
+    ayahsDiv.innerHTML = "<div class='ayah'>لم يتم تحميل القرآن</div>";
     return;
   }
 
-  window.quran.forEach((s, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = s.name;
-    surahSelect.appendChild(opt);
+  quran.forEach((s, i) => {
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = s.name;
+    surahSelect.appendChild(o);
   });
 
-  function loadSurah(index) {
+  function loadSurah(i) {
     ayahsDiv.innerHTML = "";
-    window.quran[index].verses.forEach(v => {
+    quran[i].verses.forEach(v => {
       const d = document.createElement("div");
       d.className = "ayah";
       d.textContent = `${v.text} ﴿${v.id}﴾`;
@@ -164,18 +226,16 @@ function showPage(id) {
 }
 
 let count = 0;
-function increment() {
-  count++;
-  document.getElementById("count").textContent = count;
-}
-function reset() {
-  count = 0;
-  document.getElementById("count").textContent = 0;
-}
-function changeTasbeeh(text) {
-  document.getElementById("tasbeehText").textContent = text;
-  reset();
-}
+function increment(){ document.getElementById("count").textContent = ++count; }
+function reset(){ count = 0; document.getElementById("count").textContent = 0; }
+function changeTasbeeh(t){ document.getElementById("tasbeehText").textContent = t; reset(); }
+
+// البوصلة
+window.addEventListener("deviceorientation", e => {
+  if (e.alpha == null) return;
+  document.getElementById("needle").style.transform = `rotate(${360 - e.alpha}deg)`;
+  document.getElementById("heading").textContent = Math.round(e.alpha) + "°";
+});
 </script>
 
 </body>
