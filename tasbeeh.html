@@ -5,88 +5,50 @@
 <title>المسبحة</title>
 
 <style>
-body{
-  font-family: Tahoma, sans-serif;
-  background:#f5f5f5;
-  margin:0;
-  text-align:center;
+body {
+  font-family: Tahoma;
+  background: #121212;
+  color: #fff;
+  padding: 20px;
 }
-
-header{
-  background:#2c3e50;
-  color:white;
-  padding:15px;
-}
-
-nav button{
-  margin:5px;
-  padding:10px 15px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-section{
-  background:white;
-  margin:30px auto;
-  padding:25px;
-  max-width:400px;
-  border-radius:10px;
-}
-
-#count{
-  font-size:60px;
-  margin:20px;
-}
-
-select, button{
-  font-size:18px;
-  padding:10px;
-  margin:5px;
+button {
+  padding: 10px;
+  font-size: 18px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🧮 المسبحة</h1>
-  <nav>
-    <button onclick="goPage('index.html')">القرآن</button>
-    <button onclick="goPage('adhkar.html')">الأذكار</button>
-  </nav>
-</header>
+<h2>🧮 المسبحة</h2>
 
-<section>
-  <select id="dhikr">
-    <option>سبحان الله</option>
-    <option>الحمد لله</option>
-    <option>الله أكبر</option>
-    <option>لا إله إلا الله</option>
-    <option>لا حول ولا قوة إلا بالله</option>
-    <option>اللهم صلِّ على محمد</option>
-  </select>
+<select id="dhikr">
+  <option>سبحان الله</option>
+  <option>الحمد لله</option>
+  <option>الله أكبر</option>
+  <option>لا إله إلا الله</option>
+  <option>أستغفر الله</option>
+</select>
 
-  <div id="count">0</div>
+<h3 id="count">0</h3>
 
-  <button onclick="inc()">تسبيح</button>
-  <button onclick="reset()">تصفير</button>
-</section>
+<button onclick="inc()">تسبيح</button>
+<button onclick="reset()">تصفير</button>
+<br><br>
+<button onclick="location.href='index.html'">العودة للقرآن</button>
 
 <script>
-let counter = 0;
+let c = 0;
+const count = document.getElementById("count");
 
-function inc(){
-  counter++;
-  document.getElementById("count").textContent = counter;
+function inc() {
+  c++;
+  count.textContent = c;
 }
 
-function reset(){
-  counter = 0;
-  document.getElementById("count").textContent = counter;
-}
-
-function goPage(page){
-  window.location.href = page;
+function reset() {
+  c = 0;
+  count.textContent = 0;
 }
 </script>
 
