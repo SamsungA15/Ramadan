@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>القرآن الكريم</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن الكريم</title>
 
-  <style>
-    body {
-      font-family: "Amiri", serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
-
-    header {
-      background: #2f7d7b;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-    }
-
-    select, button {
-      width: 95%;
-      padding: 10px;
-      margin: 10px auto;
-      display: block;
-      font-size: 16px;
-    }
-
-    #ayahContainer {
-      padding: 15px;
-    }
-
-    .ayah {
-      background: white;
-      margin-bottom: 10px;
-      padding: 12px;
-      border-radius: 8px;
-      line-height: 2;
-      cursor: pointer;
-    }
-
-    .ayah:hover {
-      background: #e0f2f1;
-    }
-  </style>
+<style>
+body {
+  font-family: Amiri, serif;
+  margin: 0;
+  background: #f4f4f4;
+}
+header {
+  background: #2f7d7b;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+}
+nav {
+  display: flex;
+  justify-content: space-around;
+  background: #ddd;
+  padding: 10px;
+}
+nav button {
+  padding: 8px 12px;
+}
+select, button {
+  width: 95%;
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 16px;
+  display: block;
+}
+.ayah {
+  background: white;
+  margin: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  line-height: 2;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  القرآن الكريم
-</header>
+<header>القرآن الكريم</header>
+
+<nav>
+  <button onclick="location.href='adhkar.html'">الأذكار</button>
+  <button onclick="location.href='tasbeeh.html'">المسبحة</button>
+</nav>
 
 <select id="surahSelect">
   <option value="">اختر السورة</option>
@@ -61,94 +61,51 @@
 
 <div id="ayahContainer"></div>
 
-<!-- تحميل القرآن -->
 <script src="quran.js"></script>
 
 <script>
-  const surahSelect = document.getElementById("surahSelect");
-  const ayahContainer = document.getElementById("ayahContainer");
+const surahSelect = document.getElementById("surahSelect");
+const ayahContainer = document.getElementById("ayahContainer");
 
-  // تحميل أسماء السور
-  function loadSurahNames() {
-    if (!window.quran) {
-      alert("ملف القرآن غير محمّل");
-      return;
-    }
+Object.keys(quran).forEach(name => {
+  const opt = document.createElement("option");
+  opt.value = name;
+  opt.textContent = name;
+  surahSelect.appendChild(opt);
+});
 
-    Object.keys(quran).forEach(name => {
-      const option = document.createElement("option");
-      option.value = name;
-      option.textContent = name;
-      surahSelect.appendChild(option);
-    });
+function openSurah() {
+  const name = surahSelect.value;
+  if (!name) return;
 
-    // استرجاع آخر سورة
-    const lastSurah = localStorage.getItem("lastSurah");
-    if (lastSurah) {
-      surahSelect.value = lastSurah;
-      openSurah();
-    }
+  localStorage.setItem("lastSurah", name);
+  ayahContainer.innerHTML = "";
+
+  quran[name].forEach((ayah, i) => {
+    const text =
+      typeof ayah === "string"
+        ? ayah
+        : ayah.text || ayah.arabic || Object.values(ayah)[0];
+
+    const div = document.createElement("div");
+    div.className = "ayah";
+    div.textContent = `${i + 1} - ${text}`;
+    div.onclick = () => localStorage.setItem("lastAyah", i);
+    ayahContainer.appendChild(div);
+  });
+
+  const lastAyah = localStorage.getItem("lastAyah");
+  if (lastAyah) {
+    ayahContainer.children[lastAyah]?.scrollIntoView({behavior:"smooth"});
   }
+}
 
-  function openSurah() {
-    const surahName = surahSelect.value;
-    if (!surahName) return;
-
-    loadSurah(surahName);
-    localStorage.setItem("lastSurah", surahName);
-  }
-
-  function loadSurah(surahName) {
-    ayahContainer.innerHTML = "";
-
-    const surah = quran[surahName];
-
-    if (!surah || !Array.isArray(surah)) {
-      ayahContainer.innerHTML = "<p>لا توجد آيات</p>";
-      return;
-    }
-
-    surah.forEach((ayah, index) => {
-      let text = "";
-
-      if (typeof ayah === "string") {
-        text = ayah;
-      } else if (typeof ayah === "object") {
-        text =
-          ayah.text ||
-          ayah.arabic ||
-          ayah.aya ||
-          ayah.content ||
-          Object.values(ayah)[0];
-      }
-
-      if (!text) return;
-
-      const div = document.createElement("div");
-      div.className = "ayah";
-      div.textContent = `${index + 1} - ${text}`;
-
-      // حفظ آخر آية
-      div.onclick = () => {
-        localStorage.setItem("lastAyah", index);
-      };
-
-      ayahContainer.appendChild(div);
-    });
-
-    // الرجوع لآخر آية
-    const lastAyah = localStorage.getItem("lastAyah");
-    if (lastAyah !== null) {
-      setTimeout(() => {
-        ayahContainer.children[lastAyah]?.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-      }, 300);
-    }
-  }
-
-  loadSurahNames();
+// استرجاع آخر سورة
+const lastSurah = localStorage.getItem("lastSurah");
+if (lastSurah) {
+  surahSelect.value = lastSurah;
+  openSurah();
+}
 </script>
 
 </body>
