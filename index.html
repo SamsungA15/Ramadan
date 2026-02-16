@@ -6,15 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --bg: #111;
-      --text: #fff;
-      --card: #1e1e1e;
-      --accent: #c9a227;
+      --bg: #f7f7f7;
+      --text: #111;
+      --card: #ffffff;
+      --accent: #0a8754;
     }
-    body.light {
-      --bg: #f5f5f5;
-      --text: #000;
-      --card: #fff;
+    body.dark {
+      --bg: #121212;
+      --text: #f5f5f5;
+      --card: #1e1e1e;
+      --accent: #2ecc71;
     }
     body {
       margin: 0;
@@ -23,92 +24,195 @@
       color: var(--text);
     }
     header {
+      background: var(--accent);
+      color: white;
       padding: 10px;
-      background: var(--card);
+      text-align: center;
+    }
+    nav {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      justify-content: space-around;
+      background: var(--card);
+      padding: 10px;
     }
-    select, button {
-      padding: 8px;
-      font-size: 16px;
+    nav button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    #content {
+    .hidden { display: none; }
+    .container {
       padding: 15px;
-      line-height: 2.2;
-      font-size: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
     }
     .ayah {
+      background: var(--card);
       margin-bottom: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 20px;
+      line-height: 2;
     }
     .ayah span {
       color: var(--accent);
       font-size: 14px;
+    }
+    .tasbeeh-box {
+      background: var(--card);
+      padding: 20px;
+      text-align: center;
+      border-radius: 15px;
+    }
+    .tasbeeh-box button {
+      margin: 10px;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 <header>
-  <select id="surahSelect"></select>
-  <button onclick="go('adhkar.html')">الأذكار</button>
-  <button onclick="go('tasbeeh.html')">المسبحة</button>
-  <button onclick="toggleMode()">🌙 / ☀️</button>
+  <h2 id="pageTitle">القرآن الكريم</h2>
 </header>
 
-<div id="content"></div>
+<nav>
+  <button onclick="showPage('quran')">📖 القرآن</button>
+  <button onclick="showPage('adhkar')">🤲 الأذكار</button>
+  <button onclick="showPage('tasbeeh')">📿 المسبحة</button>
+  <button onclick="toggleTheme()">🌓</button>
+</nav>
+
+<div class="container">
+
+  <!-- صفحة القرآن -->
+  <div id="quranPage">
+    <select id="surahSelect"></select>
+    <div id="ayahs"></div>
+  </div>
+
+  <!-- صفحة الأذكار -->
+  <div id="adhkarPage" class="hidden">
+    <div class="ayah">أذكار الصباح</div>
+    <div class="ayah">أذكار المساء</div>
+    <div class="ayah">أذكار رمضان</div>
+    <div class="ayah">أذكار ليلة القدر</div>
+    <div class="ayah">أذكار يوم الجمعة</div>
+  </div>
+
+  <!-- صفحة المسبحة -->
+  <div id="tasbeehPage" class="hidden">
+    <div class="tasbeeh-box">
+      <h3 id="tasbeehText">سبحان الله</h3>
+      <h1 id="counter">0</h1>
+      <button onclick="countTasbeeh()">➕</button>
+      <button onclick="resetTasbeeh()">🔄 تصفير</button>
+      <br><br>
+      <select onchange="changeTasbeeh(this.value)">
+        <option>سبحان الله</option>
+        <option>الحمد لله</option>
+        <option>الله أكبر</option>
+        <option>لا إله إلا الله</option>
+        <option>أستغفر الله</option>
+      </select>
+    </div>
+  </div>
+
+</div>
 
 <script src="quran.js"></script>
-<script>
-let select = document.getElementById("surahSelect");
-let content = document.getElementById("content");
 
-/* تعبئة أسماء السور */
+<script>
+/* ========== تنقل الصفحات ========== */
+function showPage(page) {
+  document.getElementById("quranPage").classList.add("hidden");
+  document.getElementById("adhkarPage").classList.add("hidden");
+  document.getElementById("tasbeehPage").classList.add("hidden");
+
+  if (page === "quran") {
+    document.getElementById("quranPage").classList.remove("hidden");
+    pageTitle.innerText = "القرآن الكريم";
+  }
+  if (page === "adhkar") {
+    document.getElementById("adhkarPage").classList.remove("hidden");
+    pageTitle.innerText = "الأذكار";
+  }
+  if (page === "tasbeeh") {
+    document.getElementById("tasbeehPage").classList.remove("hidden");
+    pageTitle.innerText = "المسبحة";
+  }
+}
+
+/* ========== الوضع الداكن ========== */
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+
+/* ========== تحميل السور ========== */
+const surahSelect = document.getElementById("surahSelect");
+const ayahsDiv = document.getElementById("ayahs");
+
 quran.forEach(surah => {
-  let opt = document.createElement("option");
+  const opt = document.createElement("option");
   opt.value = surah.id;
   opt.textContent = surah.name;
-  select.appendChild(opt);
+  surahSelect.appendChild(opt);
 });
 
-/* تحميل آخر سورة محفوظة */
-let savedSurah = localStorage.getItem("surah") || 1;
-select.value = savedSurah;
-loadSurah(savedSurah);
-
-/* عند تغيير السورة */
-select.onchange = () => {
-  localStorage.setItem("surah", select.value);
-  loadSurah(select.value);
+surahSelect.onchange = () => {
+  localStorage.setItem("lastSurah", surahSelect.value);
+  loadSurah(surahSelect.value);
 };
 
 function loadSurah(id) {
-  content.innerHTML = "";
-  let surah = quran.find(s => s.id == id);
+  ayahsDiv.innerHTML = "";
+  const surah = quran.find(s => s.id == id);
   if (!surah || !surah.verses) return;
 
   surah.verses.forEach(v => {
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.className = "ayah";
     div.innerHTML = `${v.text} <span>﴿${v.id}﴾</span>`;
-    content.appendChild(div);
+    ayahsDiv.appendChild(div);
   });
 
-  content.innerHTML += "<hr><div style='text-align:center'>صدق الله العظيم</div>";
+  const end = document.createElement("div");
+  end.className = "ayah";
+  end.innerHTML = "صدق الله العظيم";
+  ayahsDiv.appendChild(end);
 }
 
-function toggleMode() {
-  document.body.classList.toggle("light");
-  localStorage.setItem("mode", document.body.className);
-}
+/* ========== حفظ آخر سورة ========== */
+const last = localStorage.getItem("lastSurah") || 1;
+surahSelect.value = last;
+loadSurah(last);
 
-if (localStorage.getItem("mode") === "light") {
-  document.body.classList.add("light");
+/* ========== المسبحة ========== */
+let count = 0;
+function countTasbeeh() {
+  count++;
+  document.getElementById("counter").innerText = count;
 }
-
-function go(page) {
-  window.location.href = page;
+function resetTasbeeh() {
+  count = 0;
+  document.getElementById("counter").innerText = count;
+}
+function changeTasbeeh(text) {
+  document.getElementById("tasbeehText").innerText = text;
+  resetTasbeeh();
 }
 </script>
+
 </body>
 </html>
