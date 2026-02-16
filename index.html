@@ -5,54 +5,45 @@
 <title>القرآن الكريم</title>
 
 <style>
-body {
-  font-family: "Amiri", Tahoma, Arial;
-  background: #f7f7f7;
-  color: #000;
-  margin: 0;
-  padding: 20px;
-  transition: 0.3s;
+body{
+  font-family: "Tahoma", sans-serif;
+  background:#f5f5f5;
+  margin:0;
+  padding:0;
+  text-align:center;
 }
 
-.dark {
-  background: #121212;
-  color: #fff;
+header{
+  background:#2c3e50;
+  color:white;
+  padding:15px;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+nav button{
+  margin:5px;
+  padding:10px 15px;
+  font-size:16px;
+  cursor:pointer;
 }
 
-nav button {
-  padding: 8px 14px;
-  font-size: 16px;
-  cursor: pointer;
+select{
+  margin:20px;
+  padding:10px;
+  font-size:18px;
 }
 
-select {
-  width: 100%;
-  padding: 10px;
-  font-size: 18px;
-  margin: 15px 0;
+#surahContent{
+  padding:20px;
+  max-width:800px;
+  margin:auto;
+  line-height:2.2;
+  font-size:20px;
+  background:white;
+  border-radius:10px;
 }
 
-#surahContent {
-  line-height: 2.4;
-  font-size: 22px;
-  text-align: center;
-}
-
-.ayah {
-  margin-bottom: 15px;
-}
-
-.sadaq {
-  margin-top: 30px;
-  font-weight: bold;
-  font-size: 22px;
+.ayah{
+  margin-bottom:15px;
 }
 </style>
 </head>
@@ -60,69 +51,83 @@ select {
 <body>
 
 <header>
-  <h2>📖 القرآن الكريم</h2>
+  <h1>📖 القرآن الكريم</h1>
   <nav>
-    <button onclick="location.href='adhkar.html'">🤲 الأدعية</button>
-    <button onclick="location.href='tasbeeh.html'">📿 المسبحة</button>
-    <button id="themeBtn">🌙</button>
+    <button onclick="goPage('adhkar.html')">الأذكار</button>
+    <button onclick="goPage('tasbeeh.html')">المسبحة</button>
   </nav>
 </header>
 
-<hr>
-
 <select id="surahSelect">
-  <option value="">— اختر سورة —</option>
+  <option value="">اختر سورة</option>
 </select>
 
 <div id="surahContent"></div>
 
-<!-- ملف القرآن -->
+<!-- مهم جدًا -->
 <script src="quran.js"></script>
 
 <script>
-const select = document.getElementById("surahSelect");
-const content = document.getElementById("surahContent");
-const themeBtn = document.getElementById("themeBtn");
+const surahSelect = document.getElementById("surahSelect");
+const surahContent = document.getElementById("surahContent");
 
-/* تعبئة أسماء السور */
-quran.forEach(surah => {
-  const opt = document.createElement("option");
-  opt.value = surah.id;
-  opt.textContent = surah.name;
-  select.appendChild(opt);
-});
+/* تحميل أسماء السور */
+function populateSurahs(){
+  surahSelect.innerHTML = '<option value="">اختر سورة</option>';
 
-/* عند اختيار سورة */
-select.addEventListener("change", () => {
-  const surah = quran.find(s => s.id == select.value);
-  if (!surah) return;
+  quran.forEach(surah=>{
+    const option = document.createElement("option");
+    option.value = surah.id;
+    option.textContent = surah.name;
+    surahSelect.appendChild(option);
+  });
+}
 
-  let html = `<h3>${surah.name}</h3>`;
+/* عرض الآيات */
+function loadSurah(id){
+  const surah = quran.find(s => s.id == id);
+  if(!surah) return;
 
-  surah.verses.forEach((ayah, index) => {
-    html += `
-      <div class="ayah">
-        ${ayah.text}
-        <span>﴿${index + 1}﴾</span>
-      </div>
-    `;
+  surahContent.innerHTML = "";
+
+  surah.verses.forEach((v, i)=>{
+    const div = document.createElement("div");
+    div.className = "ayah";
+    div.textContent = `${i + 1} - ${v.text}`;
+    surahContent.appendChild(div);
   });
 
-  html += `<div class="sadaq">﴿ صدق الله العظيم ﴾</div>`;
-  content.innerHTML = html;
+  const end = document.createElement("div");
+  end.style.marginTop = "25px";
+  end.style.fontWeight = "bold";
+  end.textContent = "صدق الله العظيم";
+  surahContent.appendChild(end);
+
+  /* حفظ آخر سورة */
+  localStorage.setItem("lastSurah", id);
+}
+
+/* عند تغيير السورة */
+surahSelect.addEventListener("change", ()=>{
+  if(surahSelect.value){
+    loadSurah(surahSelect.value);
+  }
 });
 
-/* الوضع الداكن */
-themeBtn.onclick = () => {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
-};
+/* استرجاع آخر سورة عند الرجوع */
+window.addEventListener("load", ()=>{
+  populateSurahs();
 
-/* استرجاع الوضع */
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
+  const last = localStorage.getItem("lastSurah");
+  if(last){
+    surahSelect.value = last;
+    loadSurah(last);
+  }
+});
+
+/* الانتقال بين الصفحات */
+function goPage(page){
+  window.location.href = page;
 }
 </script>
 
