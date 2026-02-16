@@ -3,45 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <title>المسبحة</title>
+
 <style>
-body { font-family: Amiri; text-align:center; background:#f4f4f4 }
-header { background:#2f7d7b;color:white;padding:15px }
-.counter { font-size:40px;margin:20px }
-button { padding:10px 20px;font-size:18px;margin:5px }
+body{
+  font-family: Tahoma, sans-serif;
+  background:#f5f5f5;
+  margin:0;
+  text-align:center;
+}
+
+header{
+  background:#2c3e50;
+  color:white;
+  padding:15px;
+}
+
+nav button{
+  margin:5px;
+  padding:10px 15px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+section{
+  background:white;
+  margin:30px auto;
+  padding:25px;
+  max-width:400px;
+  border-radius:10px;
+}
+
+#count{
+  font-size:60px;
+  margin:20px;
+}
+
+select, button{
+  font-size:18px;
+  padding:10px;
+  margin:5px;
+}
 </style>
 </head>
 
 <body>
 
-<header>المسبحة</header>
+<header>
+  <h1>🧮 المسبحة</h1>
+  <nav>
+    <button onclick="goPage('index.html')">القرآن</button>
+    <button onclick="goPage('adhkar.html')">الأذكار</button>
+  </nav>
+</header>
 
-<select id="zikr">
-  <option>سبحان الله</option>
-  <option>الحمد لله</option>
-  <option>الله أكبر</option>
-  <option>لا إله إلا الله</option>
-  <option>لا حول ولا قوة إلا بالله</option>
-</select>
+<section>
+  <select id="dhikr">
+    <option>سبحان الله</option>
+    <option>الحمد لله</option>
+    <option>الله أكبر</option>
+    <option>لا إله إلا الله</option>
+    <option>لا حول ولا قوة إلا بالله</option>
+    <option>اللهم صلِّ على محمد</option>
+  </select>
 
-<div class="counter" id="count">0</div>
+  <div id="count">0</div>
 
-<button onclick="inc()">تسبيح</button>
-<button onclick="reset()">تصفير</button>
-<button onclick="location.href='index.html'">رجوع</button>
+  <button onclick="inc()">تسبيح</button>
+  <button onclick="reset()">تصفير</button>
+</section>
 
 <script>
-let c = localStorage.getItem("tasbeeh") || 0;
-document.getElementById("count").textContent = c;
+let counter = 0;
 
 function inc(){
-  c++;
-  localStorage.setItem("tasbeeh", c);
-  document.getElementById("count").textContent = c;
+  counter++;
+  document.getElementById("count").textContent = counter;
 }
+
 function reset(){
-  c = 0;
-  localStorage.setItem("tasbeeh", c);
-  document.getElementById("count").textContent = c;
+  counter = 0;
+  document.getElementById("count").textContent = counter;
+}
+
+function goPage(page){
+  window.location.href = page;
 }
 </script>
 
