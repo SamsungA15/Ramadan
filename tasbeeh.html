@@ -3,41 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>المسبحة</title>
-
 <style>
-body {
-  font-family: Tahoma;
-  background: #f4f4f4;
-  text-align: center;
-  margin: 0;
-}
-
-button {
-  font-size: 20px;
-  padding: 10px 20px;
-  margin: 10px;
-}
+body { font-family: Amiri; text-align:center; background:#f4f4f4 }
+header { background:#2f7d7b;color:white;padding:15px }
+.counter { font-size:40px;margin:20px }
+button { padding:10px 20px;font-size:18px;margin:5px }
 </style>
 </head>
 
 <body>
-<header style="background:#2e7d32;color:white;padding:10px;">
-  <a href="adhkar.html" style="color:white;">السابق</a>
-  <span>المسبحة</span>
-</header>
 
-<h1 id="count">0</h1>
+<header>المسبحة</header>
 
-<button onclick="add()">سبحان الله</button>
-<button onclick="add()">الحمد لله</button>
-<button onclick="add()">الله أكبر</button>
+<select id="zikr">
+  <option>سبحان الله</option>
+  <option>الحمد لله</option>
+  <option>الله أكبر</option>
+  <option>لا إله إلا الله</option>
+  <option>لا حول ولا قوة إلا بالله</option>
+</select>
+
+<div class="counter" id="count">0</div>
+
+<button onclick="inc()">تسبيح</button>
+<button onclick="reset()">تصفير</button>
+<button onclick="location.href='index.html'">رجوع</button>
 
 <script>
-let counter = 0;
-function add(){
-  counter++;
-  document.getElementById("count").textContent = counter;
+let c = localStorage.getItem("tasbeeh") || 0;
+document.getElementById("count").textContent = c;
+
+function inc(){
+  c++;
+  localStorage.setItem("tasbeeh", c);
+  document.getElementById("count").textContent = c;
+}
+function reset(){
+  c = 0;
+  localStorage.setItem("tasbeeh", c);
+  document.getElementById("count").textContent = c;
 }
 </script>
+
 </body>
 </html>
