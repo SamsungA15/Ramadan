@@ -1,93 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>القرآن الكريم</title>
-
-<style>
-body {
-  font-family: Tahoma;
-  background: #121212;
-  color: #fff;
-  margin: 0;
-  padding: 20px;
-}
-
-select, button {
-  padding: 10px;
-  margin: 5px;
-  font-size: 16px;
-}
-
-#verses {
-  margin-top: 20px;
-  line-height: 2.2;
-  font-size: 20px;
-}
-
-.verse {
-  margin-bottom: 10px;
-}
-
-nav {
-  margin-top: 20px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>القرآن الكريم</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #111;
+      --text: #fff;
+      --card: #1e1e1e;
+      --accent: #c9a227;
+    }
+    body.light {
+      --bg: #f5f5f5;
+      --text: #000;
+      --card: #fff;
+    }
+    body {
+      margin: 0;
+      font-family: "Amiri", serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 10px;
+      background: var(--card);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    select, button {
+      padding: 8px;
+      font-size: 16px;
+    }
+    #content {
+      padding: 15px;
+      line-height: 2.2;
+      font-size: 20px;
+    }
+    .ayah {
+      margin-bottom: 10px;
+    }
+    .ayah span {
+      color: var(--accent);
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
+<header>
+  <select id="surahSelect"></select>
+  <button onclick="go('adhkar.html')">الأذكار</button>
+  <button onclick="go('tasbeeh.html')">المسبحة</button>
+  <button onclick="toggleMode()">🌙 / ☀️</button>
+</header>
 
-<h2>📖 القرآن الكريم</h2>
-
-<select id="surahSelect"></select>
-
-<div id="verses"></div>
-
-<div>صدق الله العظيم</div>
-
-<nav>
-  <button onclick="location.href='adhkar.html'">الأذكار</button>
-  <button onclick="location.href='tasbeeh.html'">المسبحة</button>
-</nav>
+<div id="content"></div>
 
 <script src="quran.js"></script>
 <script>
-const select = document.getElementById("surahSelect");
-const versesDiv = document.getElementById("verses");
+let select = document.getElementById("surahSelect");
+let content = document.getElementById("content");
 
-// تحميل أسماء السور
+/* تعبئة أسماء السور */
 quran.forEach(surah => {
-  const opt = document.createElement("option");
+  let opt = document.createElement("option");
   opt.value = surah.id;
   opt.textContent = surah.name;
   select.appendChild(opt);
 });
 
-// تحميل آخر سورة
-const saved = localStorage.getItem("lastSurah");
-if (saved) select.value = saved;
+/* تحميل آخر سورة محفوظة */
+let savedSurah = localStorage.getItem("surah") || 1;
+select.value = savedSurah;
+loadSurah(savedSurah);
 
-// عرض السورة
-function showSurah(id) {
-  versesDiv.innerHTML = "";
-  const surah = quran.find(s => s.id == id);
-  if (!surah) return;
+/* عند تغيير السورة */
+select.onchange = () => {
+  localStorage.setItem("surah", select.value);
+  loadSurah(select.value);
+};
+
+function loadSurah(id) {
+  content.innerHTML = "";
+  let surah = quran.find(s => s.id == id);
+  if (!surah || !surah.verses) return;
 
   surah.verses.forEach(v => {
-    const div = document.createElement("div");
-    div.className = "verse";
-    div.textContent = `(${v.id}) ${v.text}`;
-    versesDiv.appendChild(div);
+    let div = document.createElement("div");
+    div.className = "ayah";
+    div.innerHTML = `${v.text} <span>﴿${v.id}﴾</span>`;
+    content.appendChild(div);
   });
 
-  localStorage.setItem("lastSurah", id);
+  content.innerHTML += "<hr><div style='text-align:center'>صدق الله العظيم</div>";
 }
 
-select.addEventListener("change", e => showSurah(e.target.value));
+function toggleMode() {
+  document.body.classList.toggle("light");
+  localStorage.setItem("mode", document.body.className);
+}
 
-// تشغيل تلقائي
-showSurah(select.value || 1);
+if (localStorage.getItem("mode") === "light") {
+  document.body.classList.add("light");
+}
+
+function go(page) {
+  window.location.href = page;
+}
 </script>
-
 </body>
 </html>
