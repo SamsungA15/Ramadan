@@ -6,8 +6,8 @@
 
 <style>
 body {
-  font-family: Tahoma, Arial;
-  background: #f5f5f5;
+  font-family: "Amiri", Tahoma, Arial;
+  background: #f7f7f7;
   color: #000;
   margin: 0;
   padding: 20px;
@@ -23,18 +23,36 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
-select, button {
-  padding: 8px;
-  margin: 5px;
+nav button {
+  padding: 8px 14px;
   font-size: 16px;
+  cursor: pointer;
 }
 
-#ayahBox {
-  margin-top: 20px;
-  line-height: 2;
-  font-size: 20px;
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  margin: 15px 0;
+}
+
+#surahContent {
+  line-height: 2.4;
+  font-size: 22px;
+  text-align: center;
+}
+
+.ayah {
+  margin-bottom: 15px;
+}
+
+.sadaq {
+  margin-top: 30px;
+  font-weight: bold;
+  font-size: 22px;
 }
 </style>
 </head>
@@ -43,103 +61,56 @@ select, button {
 
 <header>
   <h2>📖 القرآن الكريم</h2>
-  <button id="toggleTheme">🌙</button>
+  <nav>
+    <button onclick="location.href='adhkar.html'">🤲 الأدعية</button>
+    <button onclick="location.href='tasbeeh.html'">📿 المسبحة</button>
+    <button id="themeBtn">🌙</button>
+  </nav>
 </header>
 
 <hr>
 
-<label>اختر السورة:</label><br>
 <select id="surahSelect">
-  <option value="">-- اختر سورة --</option>
+  <option value="">— اختر سورة —</option>
 </select>
 
-<div id="ayahBox"></div>
+<div id="surahContent"></div>
 
-<div style="margin-top:20px;">
-  <button id="prevAyah">⬅ السابق</button>
-  <button id="nextAyah">التالي ➡</button>
-</div>
-
-<!-- تحميل القرآن -->
+<!-- ملف القرآن -->
 <script src="quran.js"></script>
 
 <script>
-let currentSurah = null;
-let currentAyah = 0;
-
-/* عناصر */
 const select = document.getElementById("surahSelect");
-const ayahBox = document.getElementById("ayahBox");
-const nextBtn = document.getElementById("nextAyah");
-const prevBtn = document.getElementById("prevAyah");
-const themeBtn = document.getElementById("toggleTheme");
+const content = document.getElementById("surahContent");
+const themeBtn = document.getElementById("themeBtn");
 
 /* تعبئة أسماء السور */
 quran.forEach(surah => {
-  const option = document.createElement("option");
-  option.value = surah.id;
-  option.textContent = surah.name;
-  select.appendChild(option);
+  const opt = document.createElement("option");
+  opt.value = surah.id;
+  opt.textContent = surah.name;
+  select.appendChild(opt);
 });
-
-/* تحميل آخر حفظ */
-const saved = JSON.parse(localStorage.getItem("quranProgress"));
-if (saved) {
-  select.value = saved.surahId;
-  loadSurah(saved.surahId, saved.ayahIndex);
-}
 
 /* عند اختيار سورة */
 select.addEventListener("change", () => {
-  loadSurah(select.value, 0);
+  const surah = quran.find(s => s.id == select.value);
+  if (!surah) return;
+
+  let html = `<h3>${surah.name}</h3>`;
+
+  surah.verses.forEach((ayah, index) => {
+    html += `
+      <div class="ayah">
+        ${ayah.text}
+        <span>﴿${index + 1}﴾</span>
+      </div>
+    `;
+  });
+
+  html += `<div class="sadaq">﴿ صدق الله العظيم ﴾</div>`;
+  content.innerHTML = html;
 });
-
-/* تحميل سورة */
-function loadSurah(id, ayahIndex = 0) {
-  currentSurah = quran.find(s => s.id == id);
-  if (!currentSurah) return;
-
-  currentAyah = ayahIndex;
-  showAyah();
-}
-
-/* عرض الآية */
-function showAyah() {
-  const ayah = currentSurah.verses[currentAyah];
-  if (!ayah) return;
-
-  ayahBox.innerHTML = `
-    <h3>${currentSurah.name}</h3>
-    <p>${ayah.text}</p>
-    <small>آية ${currentAyah + 1} من ${currentSurah.total_verses}</small>
-  `;
-
-  saveProgress();
-}
-
-/* التالي */
-nextBtn.onclick = () => {
-  if (currentAyah < currentSurah.verses.length - 1) {
-    currentAyah++;
-    showAyah();
-  }
-};
-
-/* السابق */
-prevBtn.onclick = () => {
-  if (currentAyah > 0) {
-    currentAyah--;
-    showAyah();
-  }
-};
-
-/* حفظ تلقائي */
-function saveProgress() {
-  localStorage.setItem("quranProgress", JSON.stringify({
-    surahId: currentSurah.id,
-    ayahIndex: currentAyah
-  }));
-}
 
 /* الوضع الداكن */
 themeBtn.onclick = () => {
