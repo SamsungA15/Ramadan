@@ -3,36 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌙 تطبيق المسلم</title>
+<title>📖 تطبيق المسلم</title>
 
 <link rel="manifest" href="manifest.json">
 
 <style>
+:root {
+  --bg: #020617;
+  --card: #0f172a;
+  --text: #f8fafc;
+  --border: #1e293b;
+}
+
+body.light {
+  --bg: #f8fafc;
+  --card: #e5e7eb;
+  --text: #020617;
+  --border: #cbd5f5;
+}
+
 body {
   margin: 0;
   font-family: Tahoma, Arial;
-  background: #020617;
-  color: #f8fafc;
+  background: var(--bg);
+  color: var(--text);
+  transition: 0.3s;
 }
 
 header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 15px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border);
+}
+
+header h2 {
+  margin: 0;
+}
+
+.theme-btn {
+  background: var(--card);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 18px;
 }
 
 nav {
   display: flex;
   justify-content: space-around;
   padding: 10px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border);
 }
 
 nav button {
-  background: #0f172a;
-  color: white;
+  background: var(--card);
+  color: var(--text);
   border: none;
-  padding: 10px 15px;
+  padding: 10px;
   border-radius: 12px;
   cursor: pointer;
 }
@@ -46,34 +77,29 @@ section.active {
   display: block;
 }
 
+select, button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  background: var(--card);
+  color: var(--text);
+  border: none;
+}
+
 .ayah {
-  background: #0f172a;
+  background: var(--card);
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 15px;
   line-height: 2;
 }
 
-select, button {
-  width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-}
-
 .counter {
   font-size: 60px;
   text-align: center;
-}
-
-.arrow {
-  width: 0;
-  height: 0;
-  border-left: 30px solid transparent;
-  border-right: 30px solid transparent;
-  border-bottom: 120px solid red;
-  margin: 40px auto;
-  transition: transform 0.6s ease;
+  margin: 20px 0;
 }
 </style>
 </head>
@@ -82,63 +108,77 @@ select, button {
 
 <header>
   <h2>📖 تطبيق المسلم</h2>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
 </header>
 
 <nav>
   <button onclick="showPage('quran')">القرآن</button>
   <button onclick="showPage('azkar')">الأذكار</button>
   <button onclick="showPage('tasbeeh')">المسبحة</button>
-  <button onclick="showPage('qibla')">القبلة</button>
 </nav>
 
-<!-- ===== القرآن ===== -->
+<!-- القرآن -->
 <section id="quran" class="active">
   <select id="surahSelect"></select>
   <div id="ayahs"></div>
 </section>
 
-<!-- ===== الأذكار ===== -->
+<!-- الأذكار -->
 <section id="azkar">
-  <div class="ayah">🌅 أذكار الصباح: سبحان الله وبحمده 100 مرة</div>
-  <div class="ayah">🌙 أذكار المساء: أعوذ بكلمات الله التامات</div>
-  <div class="ayah">🛌 أذكار النوم: باسمك ربي وضعت جنبي</div>
-  <div class="ayah">🌙 ليلة القدر: اللهم إنك عفو تحب العفو فاعف عني</div>
-  <div class="ayah">🕌 رمضان: اللهم بلغنا رمضان</div>
+<h3>🌅 أذكار الصباح</h3>
+<div class="ayah">أصبحنا وأصبح الملك لله والحمد لله</div>
+<div class="ayah">اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت</div>
+<div class="ayah">سبحان الله وبحمده (100 مرة)</div>
+<div class="ayah">لا إله إلا الله وحده لا شريك له (100 مرة)</div>
+<div class="ayah">أعوذ بكلمات الله التامات من شر ما خلق (3 مرات)</div>
+
+<h3>🌙 أذكار المساء</h3>
+<div class="ayah">أمسينا وأمسى الملك لله</div>
+<div class="ayah">باسم الله الذي لا يضر مع اسمه شيء (3 مرات)</div>
+<div class="ayah">رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا (3 مرات)</div>
+
+<h3>🛏️ أذكار النوم</h3>
+<div class="ayah">باسمك ربي وضعت جنبي وبك أرفعه</div>
+<div class="ayah">اللهم قني عذابك يوم تبعث عبادك</div>
+
+<h3>✨ ليلة القدر</h3>
+<div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
+
+<h3>🕌 يوم الجمعة</h3>
+<div class="ayah">اللهم صل وسلم على نبينا محمد</div>
+<div class="ayah">اللهم اغفر للمسلمين والمسلمات</div>
 </section>
 
-<!-- ===== المسبحة ===== -->
+<!-- المسبحة -->
 <section id="tasbeeh">
-  <select onchange="changeTasbeeh(this.value)">
-    <option>سبحان الله</option>
-    <option>الحمد لله</option>
-    <option>الله أكبر</option>
-    <option>لا إله إلا الله</option>
-    <option>سبحان الله وبحمده</option>
-  </select>
+<select onchange="changeTasbeeh(this.value)">
+  <option>سبحان الله</option>
+  <option>الحمد لله</option>
+  <option>الله أكبر</option>
+  <option>لا إله إلا الله</option>
+  <option>سبحان الله وبحمده</option>
+  <option>أستغفر الله</option>
+  <option>لا حول ولا قوة إلا بالله</option>
+  <option>اللهم صل وسلم على نبينا محمد</option>
+</select>
 
-  <div id="tasbeehText" style="text-align:center;">سبحان الله</div>
-  <div id="count" class="counter">0</div>
-  <button onclick="increment()">تسبيح</button>
-  <button onclick="reset()">تصفير</button>
+<div id="tasbeehText" class="ayah" style="text-align:center">سبحان الله</div>
+<div id="count" class="counter">0</div>
+
+<button onclick="increment()">📿 تسبيح</button>
+<button onclick="reset()">🔄 تصفير</button>
 </section>
 
-<!-- ===== القبلة ===== -->
-<section id="qibla">
-  <h3 style="text-align:center">🕋 اتجاه القبلة</h3>
-  <div class="arrow" id="needle"></div>
-  <div id="qiblaStatus" style="text-align:center">جاري تحديد موقعك…</div>
-</section>
-
-<!-- ===== القرآن ===== -->
 <script src="quran.js"></script>
 
 <script>
+/* الصفحات */
 function showPage(id) {
   document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* ===== المسبحة ===== */
+/* المسبحة */
 let count = 0;
 function increment() {
   count++;
@@ -153,7 +193,7 @@ function changeTasbeeh(text) {
   reset();
 }
 
-/* ===== القرآن ===== */
+/* القرآن */
 const surahSelect = document.getElementById("surahSelect");
 const ayahsDiv = document.getElementById("ayahs");
 
@@ -177,30 +217,21 @@ if (Array.isArray(window.quran)) {
   loadSurah(0);
 }
 
-/* ===== القبلة الدقيقة (مكة) ===== */
-const KAABA_LAT = 21.422487;
-const KAABA_LON = 39.826206;
+/* الوضع الداكن / الفاتح */
+const body = document.body;
+const btn = document.getElementById("themeBtn");
 
-function toRad(d){return d*Math.PI/180;}
-function toDeg(r){return r*180/Math.PI;}
+if (localStorage.theme === "light") {
+  body.classList.add("light");
+  btn.textContent = "☀️";
+}
 
-navigator.geolocation.getCurrentPosition(pos => {
-  const lat = pos.coords.latitude;
-  const lon = pos.coords.longitude;
-
-  const φ1 = toRad(lat);
-  const φ2 = toRad(KAABA_LAT);
-  const Δλ = toRad(KAABA_LON - lon);
-
-  const y = Math.sin(Δλ);
-  const x = Math.cos(φ1)*Math.tan(φ2) - Math.sin(φ1)*Math.cos(Δλ);
-  const angle = (toDeg(Math.atan2(y, x)) + 360) % 360;
-
-  document.getElementById("needle").style.transform = `rotate(${angle}deg)`;
-  document.getElementById("qiblaStatus").textContent = "اتجه نحو السهم للقبلة";
-}, () => {
-  document.getElementById("qiblaStatus").textContent = "فشل تحديد الموقع";
-});
+function toggleTheme() {
+  body.classList.toggle("light");
+  const light = body.classList.contains("light");
+  btn.textContent = light ? "☀️" : "🌙";
+  localStorage.theme = light ? "light" : "dark";
+}
 </script>
 
 </body>
