@@ -31,9 +31,16 @@ nav button {
   font-size: 16px;
   cursor: pointer;
 }
-nav button:hover { background: #333; }
-.page { display: none; padding: 15px; }
-.page.active { display: block; }
+nav button:hover {
+  background: #333;
+}
+.page {
+  display: none;
+  padding: 15px;
+}
+.page.active {
+  display: block;
+}
 select {
   width: 100%;
   padding: 10px;
@@ -48,8 +55,15 @@ select {
   font-size: 20px;
   line-height: 1.9;
 }
-h3 { margin-top: 30px; color: #ffd700; }
-.counter { font-size: 42px; text-align: center; margin: 20px 0; }
+h3 {
+  margin-top: 30px;
+  color: #ffd700;
+}
+.counter {
+  font-size: 42px;
+  text-align: center;
+  margin: 20px 0;
+}
 .tasbeeh-btn {
   width: 100%;
   padding: 15px;
@@ -61,7 +75,20 @@ h3 { margin-top: 30px; color: #ffd700; }
   cursor: pointer;
   margin-bottom: 10px;
 }
-.reset { background: #a00; }
+.reset {
+  background: #a00;
+}
+.compass {
+  text-align: center;
+  margin-top: 20px;
+}
+.needle {
+  width: 4px;
+  height: 120px;
+  background: red;
+  margin: 0 auto;
+  transform-origin: bottom;
+}
 </style>
 </head>
 
@@ -73,7 +100,7 @@ h3 { margin-top: 30px; color: #ffd700; }
   <button onclick="showPage('quran')">القرآن</button>
   <button onclick="showPage('adhkar')">الأذكار</button>
   <button onclick="showPage('tasbeeh')">المسبحة</button>
-  <button onclick="showPage('qibla')">القبلة</button>
+  <button onclick="showPage('compass')">القبلة</button>
 </nav>
 
 <!-- القرآن -->
@@ -84,27 +111,50 @@ h3 { margin-top: 30px; color: #ffd700; }
 
 <!-- الأذكار -->
 <div id="adhkar" class="page">
+
 <h3>🌅 أذكار الصباح</h3>
 <div class="ayah">أصبحنا وأصبح الملك لله والحمد لله...</div>
+<div class="ayah">اللهم بك أصبحنا وبك أمسينا...</div>
 <div class="ayah">سبحان الله وبحمده (100 مرة)</div>
+<div class="ayah">لا إله إلا الله وحده لا شريك له (100 مرة)</div>
 
 <h3>🌙 أذكار المساء</h3>
 <div class="ayah">أمسينا وأمسى الملك لله...</div>
+<div class="ayah">باسم الله الذي لا يضر مع اسمه شيء (3 مرات)</div>
 
-<h3>🛏️ أذكار النوم</h3>
+<h3>🛏️ أذكار قبل النوم</h3>
 <div class="ayah">باسمك اللهم أموت وأحيا</div>
+<div class="ayah">سبحان الله 33 – الحمد لله 33 – الله أكبر 34</div>
+
+<h3>🌙 أذكار الاستيقاظ</h3>
+<div class="ayah">الحمد لله الذي أحيانا بعدما أماتنا</div>
+
+<h3>🤲 أذكار بعد الصلاة</h3>
+<div class="ayah">أستغفر الله (3)</div>
+<div class="ayah">اللهم أنت السلام ومنك السلام</div>
+
+<h3>🌙 أذكار رمضان</h3>
+<div class="ayah">اللهم بلغنا رمضان</div>
+<div class="ayah">اللهم تقبل صيامنا وقيامنا</div>
 
 <h3>✨ أذكار ليلة القدر</h3>
 <div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
+
+<h3>🕌 أذكار يوم الجمعة</h3>
+<div class="ayah">اللهم صل وسلم على نبينا محمد</div>
 
 <h3>📿 أذكار عامة</h3>
 <div class="ayah">سبحان الله</div>
 <div class="ayah">الحمد لله</div>
 <div class="ayah">الله أكبر</div>
+<div class="ayah">لا إله إلا الله</div>
+<div class="ayah">لا حول ولا قوة إلا بالله</div>
+
 </div>
 
 <!-- المسبحة -->
 <div id="tasbeeh" class="page">
+
 <select onchange="changeTasbeeh(this.value)">
   <option>سبحان الله</option>
   <option>الحمد لله</option>
@@ -112,8 +162,9 @@ h3 { margin-top: 30px; color: #ffd700; }
   <option>لا إله إلا الله</option>
   <option>سبحان الله وبحمده</option>
   <option>سبحان الله العظيم</option>
-  <option>أستغفر الله</option>
   <option>لا حول ولا قوة إلا بالله</option>
+  <option>أستغفر الله</option>
+  <option>اللهم صل وسلم على نبينا محمد</option>
 </select>
 
 <div id="tasbeehText" class="ayah">سبحان الله</div>
@@ -121,113 +172,69 @@ h3 { margin-top: 30px; color: #ffd700; }
 
 <button class="tasbeeh-btn" onclick="increment()">📿 تسبيح</button>
 <button class="tasbeeh-btn reset" onclick="reset()">🔄 تصفير</button>
+
 </div>
 
-<!-- القبلة -->
-<div id="qibla" class="page">
-<h3>🕋 اتجاه القبلة</h3>
-
-<div style="text-align:center;margin-top:30px">
-  <div id="qiblaArrow"
-    style="
-      width:0;height:0;
-      border-left:30px solid transparent;
-      border-right:30px solid transparent;
-      border-bottom:90px solid red;
-      margin:0 auto;
-      transform-origin:50% 100%;
-      transition:transform .2s">
+<!-- البوصلة -->
+<div id="compass" class="page">
+  <h3>🧭 اتجاه القبلة</h3>
+  <div class="compass">
+    <div id="needle" class="needle"></div>
+    <p id="heading">---</p>
+    <p id="compassStatus">حرّك الهاتف</p>
   </div>
-  <p id="qiblaStatus" style="margin-top:20px">جاري تحديد موقعك...</p>
-</div>
 </div>
 
 <script src="quran.js"></script>
 
 <script>
-// الصفحات
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+document.addEventListener("DOMContentLoaded", () => {
 
-// القرآن
-document.addEventListener("DOMContentLoaded",()=>{
-  const surahSelect=document.getElementById("surahSelect");
-  const ayahsDiv=document.getElementById("ayahs");
+  const surahSelect = document.getElementById("surahSelect");
+  const ayahsDiv = document.getElementById("ayahs");
 
-  quran.forEach((s,i)=>{
-    const o=document.createElement("option");
-    o.value=i;
-    o.textContent=s.name;
+  if (!window.quran) {
+    ayahsDiv.innerHTML = "<div class='ayah'>لم يتم تحميل القرآن</div>";
+    return;
+  }
+
+  quran.forEach((s, i) => {
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = s.name;
     surahSelect.appendChild(o);
   });
 
-  function loadSurah(i){
-    ayahsDiv.innerHTML="";
-    quran[i].verses.forEach(v=>{
-      const d=document.createElement("div");
-      d.className="ayah";
-      d.textContent=`${v.text} ﴿${v.id}﴾`;
+  function loadSurah(i) {
+    ayahsDiv.innerHTML = "";
+    quran[i].verses.forEach(v => {
+      const d = document.createElement("div");
+      d.className = "ayah";
+      d.textContent = `${v.text} ﴿${v.id}﴾`;
       ayahsDiv.appendChild(d);
     });
-    ayahsDiv.innerHTML+="<div class='ayah'>صدق الله العظيم</div>";
+    ayahsDiv.innerHTML += "<div class='ayah'>صدق الله العظيم</div>";
   }
 
-  surahSelect.onchange=e=>loadSurah(e.target.value);
+  surahSelect.addEventListener("change", e => loadSurah(e.target.value));
   loadSurah(0);
 });
 
-// المسبحة
-let count=0;
-function increment(){ document.getElementById("count").textContent=++count; }
-function reset(){ count=0; document.getElementById("count").textContent=0; }
-function changeTasbeeh(t){ document.getElementById("tasbeehText").textContent=t; reset(); }
-
-// القبلة الحقيقية
-const KAABA_LAT=21.4225, KAABA_LON=39.8262;
-let lat=null, lon=null, heading=0, vibrated=false;
-
-const rad=d=>d*Math.PI/180, deg=r=>r*180/Math.PI;
-
-function qiblaAngle(){
-  const dLon=rad(KAABA_LON-lon);
-  const y=Math.sin(dLon);
-  const x=Math.cos(rad(lat))*Math.tan(rad(KAABA_LAT))-Math.sin(rad(lat))*Math.cos(dLon);
-  return (deg(Math.atan2(y,x))+360)%360;
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function updateQibla(){
-  if(lat==null) return;
-  const angle=qiblaAngle()-heading;
-  document.getElementById("qiblaArrow").style.transform=`rotate(${angle}deg)`;
+let count = 0;
+function increment(){ document.getElementById("count").textContent = ++count; }
+function reset(){ count = 0; document.getElementById("count").textContent = 0; }
+function changeTasbeeh(t){ document.getElementById("tasbeehText").textContent = t; reset(); }
 
-  const diff=Math.abs(((angle+180)%360)-180);
-  const status=document.getElementById("qiblaStatus");
-
-  if(diff<7){
-    status.textContent="✅ أنت الآن متجه نحو القبلة";
-    status.style.color="#0f0";
-    if(navigator.vibrate && !vibrated){
-      navigator.vibrate(200);
-      vibrated=true;
-    }
-  } else {
-    status.textContent="حرّك الهاتف حتى يشير السهم للأعلى";
-    status.style.color="#fff";
-    vibrated=false;
-  }
-}
-
-navigator.geolocation.getCurrentPosition(p=>{
-  lat=p.coords.latitude;
-  lon=p.coords.longitude;
-},()=>{});
-
-window.addEventListener("deviceorientation",e=>{
-  if(e.webkitCompassHeading!=null) heading=e.webkitCompassHeading;
-  else if(e.alpha!=null) heading=360-e.alpha;
-  updateQibla();
+// البوصلة
+window.addEventListener("deviceorientation", e => {
+  if (e.alpha == null) return;
+  document.getElementById("needle").style.transform = `rotate(${360 - e.alpha}deg)`;
+  document.getElementById("heading").textContent = Math.round(e.alpha) + "°";
 });
 </script>
 
