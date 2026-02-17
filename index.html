@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تطبيق إسلامي شامل</title>
+<title>تطبيق إسلامي</title>
 
 <style>
 body {
@@ -31,22 +31,21 @@ nav button {
   font-size: 16px;
   cursor: pointer;
 }
-nav button:hover {
-  background: #333;
-}
+nav button:hover { background: #333; }
+
 .page {
   display: none;
   padding: 15px;
 }
-.page.active {
-  display: block;
-}
+.page.active { display: block; }
+
 select {
   width: 100%;
   padding: 10px;
   font-size: 18px;
   margin-bottom: 15px;
 }
+
 .ayah {
   background: #1c1c1c;
   margin-bottom: 10px;
@@ -55,15 +54,18 @@ select {
   font-size: 20px;
   line-height: 1.9;
 }
+
 h3 {
   margin-top: 30px;
   color: #ffd700;
 }
+
 .counter {
   font-size: 42px;
   text-align: center;
   margin: 20px 0;
 }
+
 .tasbeeh-btn {
   width: 100%;
   padding: 15px;
@@ -75,41 +77,28 @@ h3 {
   cursor: pointer;
   margin-bottom: 10px;
 }
-.reset {
-  background: #a00;
-}
-.compass {
-  text-align: center;
-  margin-top: 20px;
-}
-.needle {
-  width: 4px;
-  height: 120px;
-  background: red;
-  margin: 0 auto;
-  transform-origin: bottom;
-}
+
+.reset { background: #a00; }
 </style>
 </head>
 
 <body>
 
-<header>📖 تطبيق إسلامي شامل</header>
+<header>📖 تطبيق إسلامي</header>
 
 <nav>
   <button onclick="showPage('quran')">القرآن</button>
   <button onclick="showPage('adhkar')">الأذكار</button>
   <button onclick="showPage('tasbeeh')">المسبحة</button>
-  <button onclick="showPage('compass')">القبلة</button>
 </nav>
 
-<!-- القرآن -->
+<!-- صفحة القرآن -->
 <div id="quran" class="page active">
   <select id="surahSelect"></select>
   <div id="ayahs"></div>
 </div>
 
-<!-- الأذكار -->
+<!-- صفحة الأذكار -->
 <div id="adhkar" class="page">
 
 <h3>🌅 أذكار الصباح</h3>
@@ -130,12 +119,12 @@ h3 {
 <div class="ayah">الحمد لله الذي أحيانا بعدما أماتنا</div>
 
 <h3>🤲 أذكار بعد الصلاة</h3>
-<div class="ayah">أستغفر الله (3)</div>
+<div class="ayah">أستغفر الله (3 مرات)</div>
 <div class="ayah">اللهم أنت السلام ومنك السلام</div>
 
 <h3>🌙 أذكار رمضان</h3>
 <div class="ayah">اللهم بلغنا رمضان</div>
-<div class="ayah">اللهم تقبل صيامنا وقيامنا</div>
+<div class="ayah">اللهم أعنا فيه على الصيام والقيام</div>
 
 <h3>✨ أذكار ليلة القدر</h3>
 <div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
@@ -152,7 +141,7 @@ h3 {
 
 </div>
 
-<!-- المسبحة -->
+<!-- صفحة المسبحة -->
 <div id="tasbeeh" class="page">
 
 <select onchange="changeTasbeeh(this.value)">
@@ -162,8 +151,8 @@ h3 {
   <option>لا إله إلا الله</option>
   <option>سبحان الله وبحمده</option>
   <option>سبحان الله العظيم</option>
-  <option>لا حول ولا قوة إلا بالله</option>
   <option>أستغفر الله</option>
+  <option>لا حول ولا قوة إلا بالله</option>
   <option>اللهم صل وسلم على نبينا محمد</option>
 </select>
 
@@ -175,67 +164,52 @@ h3 {
 
 </div>
 
-<!-- البوصلة -->
-<div id="compass" class="page">
-  <h3>🧭 اتجاه القبلة</h3>
-  <div class="compass">
-    <div id="needle" class="needle"></div>
-    <p id="heading">---</p>
-    <p id="compassStatus">حرّك الهاتف</p>
-  </div>
-</div>
-
 <script src="quran.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  const surahSelect = document.getElementById("surahSelect");
-  const ayahsDiv = document.getElementById("ayahs");
-
-  if (!window.quran) {
-    ayahsDiv.innerHTML = "<div class='ayah'>لم يتم تحميل القرآن</div>";
-    return;
-  }
-
-  quran.forEach((s, i) => {
-    const o = document.createElement("option");
-    o.value = i;
-    o.textContent = s.name;
-    surahSelect.appendChild(o);
-  });
-
-  function loadSurah(i) {
-    ayahsDiv.innerHTML = "";
-    quran[i].verses.forEach(v => {
-      const d = document.createElement("div");
-      d.className = "ayah";
-      d.textContent = `${v.text} ﴿${v.id}﴾`;
-      ayahsDiv.appendChild(d);
-    });
-    ayahsDiv.innerHTML += "<div class='ayah'>صدق الله العظيم</div>";
-  }
-
-  surahSelect.addEventListener("change", e => loadSurah(e.target.value));
-  loadSurah(0);
-});
-
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+// التنقل بين الصفحات
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-let count = 0;
-function increment(){ document.getElementById("count").textContent = ++count; }
-function reset(){ count = 0; document.getElementById("count").textContent = 0; }
-function changeTasbeeh(t){ document.getElementById("tasbeehText").textContent = t; reset(); }
+// تحميل القرآن
+document.addEventListener("DOMContentLoaded",()=>{
+  const surahSelect=document.getElementById("surahSelect");
+  const ayahsDiv=document.getElementById("ayahs");
 
-// البوصلة
-window.addEventListener("deviceorientation", e => {
-  if (e.alpha == null) return;
-  document.getElementById("needle").style.transform = `rotate(${360 - e.alpha}deg)`;
-  document.getElementById("heading").textContent = Math.round(e.alpha) + "°";
+  if(!window.quran){
+    ayahsDiv.innerHTML="<div class='ayah'>لم يتم تحميل القرآن</div>";
+    return;
+  }
+
+  quran.forEach((s,i)=>{
+    const o=document.createElement("option");
+    o.value=i;
+    o.textContent=s.name;
+    surahSelect.appendChild(o);
+  });
+
+  function loadSurah(i){
+    ayahsDiv.innerHTML="";
+    quran[i].verses.forEach(v=>{
+      const d=document.createElement("div");
+      d.className="ayah";
+      d.textContent=`${v.text} ﴿${v.id}﴾`;
+      ayahsDiv.appendChild(d);
+    });
+    ayahsDiv.innerHTML+="<div class='ayah'>صدق الله العظيم</div>";
+  }
+
+  surahSelect.onchange=e=>loadSurah(e.target.value);
+  loadSurah(0);
 });
+
+// المسبحة
+let count=0;
+function increment(){ document.getElementById("count").textContent=++count; }
+function reset(){ count=0; document.getElementById("count").textContent=0; }
+function changeTasbeeh(t){ document.getElementById("tasbeehText").textContent=t; reset(); }
 </script>
 
 </body>
