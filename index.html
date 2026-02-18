@@ -7,107 +7,37 @@
 
 <style>
 :root {
-  --bg: #111;
-  --text: #fff;
-  --card: #1c1c1c;
-  --nav: #222;
+  --bg:#111;--text:#fff;--card:#1c1c1c;--nav:#222;
 }
-
 body.light {
-  --bg: #f5f5f5;
-  --text: #000;
-  --card: #fff;
-  --nav: #ddd;
+  --bg:#f5f5f5;--text:#000;--card:#fff;--nav:#ddd;
 }
-
 body {
-  margin: 0;
-  font-family: "Amiri", serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: 0.3s;
+  margin:0;font-family:"Amiri",serif;
+  background:var(--bg);color:var(--text);transition:.3s;
 }
-
-header {
-  background: #000;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-}
-
-nav {
-  display: flex;
-  justify-content: space-around;
-  background: var(--nav);
-}
-
+header {background:#000;padding:15px;text-align:center;font-size:22px;}
+nav {display:flex;justify-content:space-around;background:var(--nav);}
 nav button {
-  flex: 1;
-  padding: 12px;
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 18px;
-  cursor: pointer;
+  flex:1;padding:12px;background:none;border:none;
+  color:var(--text);font-size:18px;cursor:pointer;
 }
-
-.page {
-  display: none;
-  padding: 15px;
-}
-
-.page.active {
-  display: block;
-}
-
-select {
-  width: 100%;
-  padding: 10px;
-  font-size: 18px;
-  margin-bottom: 15px;
-}
-
+.page {display:none;padding:15px;}
+.page.active {display:block;}
+select {width:100%;padding:10px;font-size:18px;margin-bottom:15px;}
 .ayah {
-  background: var(--card);
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 20px;
-  line-height: 1.9;
+  background:var(--card);margin-bottom:10px;
+  padding:15px;border-radius:8px;
+  font-size:20px;line-height:1.9;
 }
-
-h3 {
-  margin-top: 30px;
-  color: #fbbf24;
-}
-
-.counter {
-  font-size: 40px;
-  text-align: center;
-  margin: 20px 0;
-}
-
+h3 {margin-top:30px;color:#fbbf24;}
+.counter {font-size:40px;text-align:center;margin:20px 0;}
 .tasbeeh-btn {
-  width: 100%;
-  padding: 15px;
-  font-size: 22px;
-  background: #444;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  width:100%;padding:15px;font-size:22px;
+  background:#444;color:white;border:none;border-radius:8px;
 }
-
-.reset {
-  background: #a00;
-}
-
-.toggle {
-  margin: 10px;
-  padding: 8px 15px;
-  font-size: 16px;
-  cursor: pointer;
-}
+.reset {background:#a00;}
+.toggle {margin:10px;padding:8px 15px;font-size:16px;}
 </style>
 </head>
 
@@ -116,7 +46,7 @@ h3 {
 <header>
 📖 تطبيق القرآن الكريم
 <br>
-<button class="toggle" onclick="toggleTheme()">🌓 الوضع الداكن / الفاتح</button>
+<button class="toggle" onclick="toggleTheme()">🌓 داكن / فاتح</button>
 </header>
 
 <nav>
@@ -125,24 +55,43 @@ h3 {
   <button onclick="showPage('tasbeeh')">المسبحة</button>
 </nav>
 
-<!-- صفحة القرآن -->
+<!-- القرآن -->
 <div id="quran" class="page active">
   <select id="surahSelect"></select>
   <div id="ayahs"></div>
 </div>
 
-<!-- صفحة الأذكار -->
+<!-- الأذكار -->
 <div id="adhkar" class="page">
 
 <h3>🌅 أذكار الصباح</h3>
 <div class="ayah">أصبحنا وأصبح الملك لله والحمد لله...</div>
-<div class="ayah">اللهم بك أصبحنا وبك أمسينا...</div>
+<div class="ayah">اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور</div>
+<div class="ayah">رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا (3)</div>
+<div class="ayah">سبحان الله وبحمده (100)</div>
+<div class="ayah">لا إله إلا الله وحده لا شريك له (100)</div>
 
 <h3>🌙 أذكار المساء</h3>
-<div class="ayah">أمسينا وأمسى الملك لله...</div>
+<div class="ayah">أمسينا وأمسى الملك لله والحمد لله...</div>
+<div class="ayah">باسم الله الذي لا يضر مع اسمه شيء (3)</div>
+<div class="ayah">أعوذ بكلمات الله التامات من شر ما خلق (3)</div>
 
 <h3>🛏️ أذكار النوم</h3>
 <div class="ayah">باسمك اللهم أموت وأحيا</div>
+<div class="ayah">اللهم قني عذابك يوم تبعث عبادك</div>
+<div class="ayah">سبحان الله 33 – الحمد لله 33 – الله أكبر 34</div>
+
+<h3>🌅 أذكار الاستيقاظ</h3>
+<div class="ayah">الحمد لله الذي أحيانا بعدما أماتنا وإليه النشور</div>
+
+<h3>🕌 أذكار بعد الصلاة</h3>
+<div class="ayah">أستغفر الله (3)</div>
+<div class="ayah">اللهم أنت السلام ومنك السلام</div>
+<div class="ayah">سبحان الله 33 – الحمد لله 33 – الله أكبر 33</div>
+
+<h3>🌙 أذكار رمضان</h3>
+<div class="ayah">اللهم بلغنا رمضان</div>
+<div class="ayah">اللهم أعنا على الصيام والقيام</div>
 
 <h3>✨ أذكار ليلة القدر</h3>
 <div class="ayah">اللهم إنك عفو تحب العفو فاعفُ عني</div>
@@ -150,15 +99,20 @@ h3 {
 <h3>🕌 أذكار يوم الجمعة</h3>
 <div class="ayah">اللهم صل وسلم على نبينا محمد</div>
 
+<h3>😔 أذكار الكرب</h3>
+<div class="ayah">لا إله إلا أنت سبحانك إني كنت من الظالمين</div>
+<div class="ayah">حسبنا الله ونعم الوكيل</div>
+
 <h3>📿 أذكار عامة</h3>
 <div class="ayah">سبحان الله</div>
 <div class="ayah">الحمد لله</div>
 <div class="ayah">الله أكبر</div>
 <div class="ayah">لا إله إلا الله</div>
+<div class="ayah">لا حول ولا قوة إلا بالله</div>
 
 </div>
 
-<!-- صفحة المسبحة -->
+<!-- المسبحة -->
 <div id="tasbeeh" class="page">
 
 <select onchange="changeTasbeeh(this.value)">
@@ -171,6 +125,8 @@ h3 {
   <option>لا حول ولا قوة إلا بالله</option>
   <option>أستغفر الله</option>
   <option>اللهم صل وسلم على نبينا محمد</option>
+  <option>حسبنا الله ونعم الوكيل</option>
+  <option>لا إله إلا أنت سبحانك إني كنت من الظالمين</option>
 </select>
 
 <div id="tasbeehText" class="ayah">سبحان الله</div>
@@ -184,65 +140,49 @@ h3 {
 <script src="quran.js"></script>
 
 <script>
-// ---------- التنقل ----------
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
-
-// ---------- الوضع الداكن ----------
-function toggleTheme() {
+function toggleTheme(){
   document.body.classList.toggle("light");
-  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+  localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark");
 }
+if(localStorage.getItem("theme")==="light"){document.body.classList.add("light");}
 
-if (localStorage.getItem("theme") === "light") {
-  document.body.classList.add("light");
-}
-
-// ---------- القرآن ----------
-const surahSelect = document.getElementById("surahSelect");
-const ayahsDiv = document.getElementById("ayahs");
-
-quran.forEach(s => {
-  const opt = document.createElement("option");
-  opt.value = s.id - 1;
-  opt.textContent = s.name;
-  surahSelect.appendChild(opt);
+// القرآن
+const surahSelect=document.getElementById("surahSelect");
+const ayahsDiv=document.getElementById("ayahs");
+quran.forEach(s=>{
+  const o=document.createElement("option");
+  o.value=s.id-1;o.textContent=s.name;surahSelect.appendChild(o);
 });
-
-function loadSurah(index) {
-  ayahsDiv.innerHTML = "";
-  quran[index].verses.forEach(v => {
-    const d = document.createElement("div");
-    d.className = "ayah";
-    d.textContent = v.text + " ﴿" + v.id + "﴾";
+function loadSurah(i){
+  ayahsDiv.innerHTML="";
+  quran[i].verses.forEach(v=>{
+    const d=document.createElement("div");
+    d.className="ayah";
+    d.textContent=v.text+" ﴿"+v.id+"﴾";
     ayahsDiv.appendChild(d);
   });
-  ayahsDiv.innerHTML += `<div class="ayah">صدق الله العظيم</div>`;
+  ayahsDiv.innerHTML+=`<div class="ayah">صدق الله العظيم</div>`;
 }
-
-surahSelect.addEventListener("change", e => loadSurah(e.target.value));
+surahSelect.addEventListener("change",e=>loadSurah(e.target.value));
 loadSurah(0);
 
-// ---------- المسبحة (الحل المطلوب) ----------
-let count = Number(localStorage.getItem("tasbeehCount")) || 0;
-document.getElementById("count").textContent = count;
-
-function increment() {
-  count++;
-  document.getElementById("count").textContent = count;
-  localStorage.setItem("tasbeehCount", count);
+// المسبحة (عداد محفوظ واحد)
+let count=Number(localStorage.getItem("tasbeehCount"))||0;
+document.getElementById("count").textContent=count;
+function increment(){
+  count++;document.getElementById("count").textContent=count;
+  localStorage.setItem("tasbeehCount",count);
 }
-
-function reset() {
-  count = 0;
-  document.getElementById("count").textContent = 0;
-  localStorage.setItem("tasbeehCount", 0);
+function reset(){
+  count=0;document.getElementById("count").textContent=0;
+  localStorage.setItem("tasbeehCount",0);
 }
-
-function changeTasbeeh(text) {
-  document.getElementById("tasbeehText").textContent = text;
+function changeTasbeeh(t){
+  document.getElementById("tasbeehText").textContent=t;
 }
 </script>
 
